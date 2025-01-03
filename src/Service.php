@@ -38,7 +38,7 @@ class Service extends Plugin
             [
                 'name' => 'Telegram服务',
                 'subs' => [
-                    ['name' => '用户管理', 'icon' => 'layui-icon layui-icon-user', 'node' => "{$code}/user/index"]
+                    ['name' => '账号管理', 'icon' => 'layui-icon layui-icon-account', 'node' => "{$code}/account.item/index"]
                 ],
             ],
         ];

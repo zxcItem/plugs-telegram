@@ -27,20 +27,20 @@ class InstallTelegram extends Migrator
      */
     public function change()
     {
-        $this->_create_plugin_telegram_user();
+        $this->_create_plugin_telegram_account();
     }
 
     /**
      * Telegram用户
-     * @class PluginTelegramUser
-     * @table plugin_telegram_user
+     * @class PluginTelegramAccount
+     * @table plugin_telegram_account
      * @return void
      */
-    private function _create_plugin_telegram_user()
+    private function _create_plugin_telegram_account()
     {
 
         // 当前数据表
-        $table = 'plugin_telegram_user';
+        $table = 'plugin_telegram_account';
 
         // 存在则跳过
         if ($this->hasTable($table)) return;
@@ -49,7 +49,10 @@ class InstallTelegram extends Migrator
         $this->table($table, [
             'engine' => 'InnoDB', 'collation' => 'utf8mb4_general_ci', 'comment' => 'Telegram-用户',
         ])
-            ->addColumn('telegram_id', 'integer', ['limit' => 10, 'default' => '', 'null' => true, 'comment' => '用户的唯一标识符'])
+            ->addColumn('telegram_id', 'string', ['limit' => 16, 'default' => '', 'null' => true, 'comment' => '用户的唯一标识符'])
+            ->addColumn('title', 'string', ['limit' => 16, 'default' => '', 'null' => true, 'comment' => '账号标题'])
+            ->addColumn('api_id', 'string', ['limit' => 16, 'default' => '', 'null' => true, 'comment' => 'API ID'])
+            ->addColumn('api_hash', 'string', ['limit' => 16, 'default' => '', 'null' => true, 'comment' => 'API Hash'])
             ->addColumn('first_name', 'string', ['limit' => 16, 'default' => '', 'null' => true, 'comment' => '用户的名字'])
             ->addColumn('last_name', 'string', ['limit' => 16, 'default' => '', 'null' => true, 'comment' => '用户的姓氏'])
             ->addColumn('username', 'string', ['limit' => 16, 'default' => '', 'null' => true, 'comment' => '用户名'])
@@ -63,12 +66,12 @@ class InstallTelegram extends Migrator
             ->addColumn('deleted', 'integer', ['limit' => 1, 'default' => 0, 'null' => true, 'comment' => '删除状态(0未删,1已删)'])
             ->addColumn('create_time', 'datetime', ['default' => NULL, 'null' => true, 'comment' => '创建时间'])
             ->addColumn('update_time', 'datetime', ['default' => NULL, 'null' => true, 'comment' => '更新时间'])
-            ->addIndex('telegram_id', ['name' => 'idx_plugin_telegram_user_telegram_id'])
-            ->addIndex('phone_number', ['name' => 'idx_plugin_telegram_user_phone_number'])
-            ->addIndex('sort', ['name' => 'idx_plugin_telegram_user_sort'])
-            ->addIndex('status', ['name' => 'idx_plugin_telegram_user_status'])
-            ->addIndex('deleted', ['name' => 'idx_plugin_telegram_user_deleted'])
-            ->addIndex('create_time', ['name' => 'idx_plugin_telegram_user_create_time'])
+            ->addIndex('telegram_id', ['name' => 'idx_plugin_telegram_account_telegram_id'])
+            ->addIndex('phone_number', ['name' => 'idx_plugin_telegram_account_phone_number'])
+            ->addIndex('sort', ['name' => 'idx_plugin_telegram_account_sort'])
+            ->addIndex('status', ['name' => 'idx_plugin_telegram_account_status'])
+            ->addIndex('deleted', ['name' => 'idx_plugin_telegram_account_deleted'])
+            ->addIndex('create_time', ['name' => 'idx_plugin_telegram_account_create_time'])
             ->create();
 
         // 修改主键长度

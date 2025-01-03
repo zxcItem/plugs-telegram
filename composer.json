@@ -9,7 +9,11 @@
         }
     ],
     "require": {
-        "php": ">7.1"
+        "php": ">=8.2",
+        "danog/madelineproto": "^8.0",
+        "longman/telegram-bot": "*",
+        "xiaochao/plugs-telegram": "dev-master",
+        "xiaochao/plugs-center": "dev-master"
     },
     "autoload": {
         "psr-4": {
