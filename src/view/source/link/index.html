@@ -1,0 +1,48 @@
+{extend name='table'}
+
+{block name="button"}
+<!--{if auth("remove")}-->
+<a data-confirm="确定永久删除吗？" data-table-id="SourceLinkTable" data-action='{:url("remove")}' data-rule="id#{id}" class='layui-btn layui-btn-sm layui-btn-primary'>批量删除</a>
+
+{/if}
+{/block}
+
+{block name="content"}
+<div class="layui-tab layui-tab-card">
+    <div class="layui-tab-content">
+        {include file='source/link/index_search'}
+        <table id="SourceLinkTable" data-url="{:request()->url()}" data-target-search="form.form-search"></table>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        let $table = $('#SourceLinkTable').layTable({
+            even: true, height: 'full',
+            sort: {field: 'id', type: 'desc'},
+            cols: [[
+                {field: 'id', hide: true},
+                {checkbox: true, fixed: true},
+                {field: 'belong_channel', title: '所属频道', width: 200, align: 'center'},
+                {field: 'release_message_id', title: '消息ID', width: 100, align: 'center'},
+                {field: 'caption', title: '文本内容', minWidth: 100, align: 'center'},
+                {field: 'type', title: '文本类型', width: 100, align: 'center'},
+                {field: 'local_url', title: '资源链接', minWidth: 200, align: 'center',templet:function (d) {
+                        return laytpl('<div><a target="_blank" data-title="查看资源链接" data-iframe="{{d.local_url}}">{{d.local_url}}</a></div>').render(d);
+                    }},
+                {field: 'create_at', title: '创建时间', align: 'center', width: 150, sort: true},
+                {toolbar: '#toolbar', title: '操作面板', align: 'center', width: 150, fixed: 'right'}
+            ]]
+        });
+    });
+</script>
+
+<script type="text/html" id="toolbar">
+    <!--{if auth("edit")} -->
+    <a class="layui-btn layui-btn-sm" data-modal='{:url("edit")}?id={{d.id}}'>编 辑</a>
+    <!--{/if}-->
+    <!--{if auth("remove")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-danger" data-confirm="确定要永久删除吗？" data-action="{:url('remove')}" data-value="id#{{d.id}}">删 除</a>
+    <!--{/if}-->
+</script>
+{/block}

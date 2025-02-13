@@ -1,0 +1,25 @@
+<form action="{:sysuri()}" method="post" data-auto="true" class="layui-form-pane layui-tab layui-form layui-card">
+    <div class="layui-card-body padding-left-40">
+        <div class="layui-form-item">
+            <label class="layui-form-label color-green">文本内容</label>
+            <div class="layui-input-block">
+                <input name="caption" value="{$vo.caption|default=''}" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label color-green">资源链接</label>
+            <div class="layui-input-block">
+                <input name="local_url" value="{$vo.local_url|default=''}" class="layui-input">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>

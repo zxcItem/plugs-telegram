@@ -62,6 +62,7 @@ class Service extends Plugin
                 'name' => '素材资源',
                 'subs' => [
                     ['name' => '频道素材资源', 'icon' => 'layui-icon layui-icon-read', 'node' => "{$code}/channel.resources/index"],
+                    ['name' => '网络链接素材', 'icon' => 'layui-icon layui-icon-read', 'node' => "{$code}/source.link/index"],
                     ['name' => '网络素材资源', 'icon' => 'layui-icon layui-icon-read', 'node' => "{$code}/source.resources/index"],
                 ],
             ],

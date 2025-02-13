@@ -26,4 +26,9 @@ class PluginTelegramChannelSource extends Abs
     {
         return $this->belongsTo(PluginTelegramChannel::class,'release_channel_id','channel_id');
     }
+
+    public static function getChannelID()
+    {
+        return self::mk()->where('status',1)->column('channel_title','channel_id');
+    }
 }

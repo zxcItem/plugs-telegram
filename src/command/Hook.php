@@ -4,6 +4,7 @@ declare (strict_types=1);
 
 namespace plugin\telegram\command;
 
+use plugin\telegram\model\PluginTelegramResourcesLink;
 use plugin\telegram\service\TelegramApi;
 use think\admin\Command;
 use think\admin\Exception;
@@ -38,11 +39,19 @@ class Hook extends Command
     {
         try {
             $data = $this->queue->data['data'];
-            $this->message($data);
+            $this->grouping($data);
         } catch (Exception $exception) {
             throw $exception;
         } catch (\Exception $exception) {
             $this->setQueueError($exception->getMessage());
+        }
+    }
+
+    protected function grouping($data)
+    {
+        $result = $data['channel_post'];
+        if ($result['entities']){
+            $this->entities($result);
         }
     }
 
@@ -69,5 +78,27 @@ class Hook extends Command
                 }
             }
         }
+    }
+
+    /**
+     * 保存文本链接
+     * @param $result
+     * @throws Exception
+     */
+    protected function entities($result)
+    {
+        $data = [];
+        foreach ($result['entities'] as &$item){
+            p($item);
+            $data[] = [
+                'release_channel_id' => $result['forward_origin']['chat']['id'],
+                'release_message_id' => $result['forward_origin']['message_id'],
+                'type'              => $item['type'] ?? '',
+                'caption'           => $result['text'] ?? '',
+                'local_url'         => $item['url'] ?? ''
+            ];
+        }
+        PluginTelegramResourcesLink::mk()->saveAll($data);
+        $this->setQueueSuccess("网络文本链接资源保存成功");
     }
 }

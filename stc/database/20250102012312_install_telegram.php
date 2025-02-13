@@ -33,6 +33,7 @@ class InstallTelegram extends Migrator
         $this->_create_plugin_telegram_channel_resources();
         $this->_create_plugin_telegram_source_resources();
         $this->_create_plugin_telegram_resources_media();
+        $this->_create_plugin_telegram_resources_link();
     }
 
     /**
@@ -89,7 +90,7 @@ class InstallTelegram extends Migrator
     }
 
     /**
-     * 媒体文件信息管理
+     * 网络资源媒体信息
      * @class PluginTelegramResourcesMedia
      * @table plugin_telegram_resources_media
      * @return void
@@ -98,7 +99,7 @@ class InstallTelegram extends Migrator
     {
         // 创建数据表对象
         $table = $this->table('plugin_telegram_resources_media', [
-            'engine' => 'InnoDB', 'collation' => 'utf8mb4_general_ci', 'comment' => '媒体文件信息管理',
+            'engine' => 'InnoDB', 'collation' => 'utf8mb4_general_ci', 'comment' => '网络资源媒体信息',
         ]);
         PhinxExtend::upgrade($table, [
             ['media_group_id', 'string', ['limit' => 32,'default' => 0, 'null' => true, 'comment' => '组合消息ID']],
@@ -114,6 +115,30 @@ class InstallTelegram extends Migrator
             ['create_at', 'datetime', ['default' => NULL, 'null' => true, 'comment' => '创建时间']],
         ], [
             'media_group_id','type','create_at',
+        ], true);
+    }
+
+    /**
+     * 网络资源链接
+     * @class PluginTelegramResourcesLink
+     * @table plugin_telegram_resources_link
+     * @return void
+     */
+    private function _create_plugin_telegram_resources_link()
+    {
+        // 创建数据表对象
+        $table = $this->table('plugin_telegram_resources_link', [
+            'engine' => 'InnoDB', 'collation' => 'utf8mb4_general_ci', 'comment' => '网络资源链接',
+        ]);
+        PhinxExtend::upgrade($table, [
+            ['release_channel_id', 'biginteger', ['default' => 0, 'null' => true, 'comment' => '来源频道ID']],
+            ['release_message_id', 'biginteger', ['default' => 0, 'null' => true, 'comment' => '来源频道消息ID']],
+            ['caption', 'string', ['limit' => 500, 'default' => NULL, 'null' => true, 'comment' => '文本内容']],
+            ['type', 'string', ['limit' => 32, 'default' => NULL, 'null' => true, 'comment' => '类型']],
+            ['local_url', 'string', ['limit' => 200, 'default' => NULL, 'null' => true, 'comment' => '媒体链接']],
+            ['create_at', 'datetime', ['default' => NULL, 'null' => true, 'comment' => '创建时间']],
+        ], [
+            'release_channel_id','create_at',
         ], true);
     }
 
