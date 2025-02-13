@@ -2,35 +2,37 @@
 
 declare (strict_types=1);
 
-namespace plugin\telegram\controller\source;
+namespace plugin\telegram\controller\channel;
 
-use plugin\telegram\model\PluginTelegramSourceContent;
-use plugin\telegram\model\PluginTelegramContentMedia;
+use plugin\telegram\model\PluginTelegramChannelResources;
+use plugin\telegram\model\PluginTelegramResourcesMedia;
+use plugin\telegram\model\PluginTelegramSourceResources;
 use think\admin\Controller;
 use think\admin\helper\QueryHelper;
+use think\admin\service\AdminService;
 
 /**
- * 内容管理
+ * 发布素材资源
  * @class Content
- * @package plugin\telegram\controller\source
+ * @package plugin\telegram\controller\channel
  */
-class Content extends Controller
+class Resources extends Controller
 {
     /**
-     * 内容管理
+     * 发布素材资源
      * @auth true
      * @menu true
      */
     public function index()
     {
-        $this->title = '内容管理';
-        PluginTelegramSourceContent::mQuery(null, static function (QueryHelper $query) {
+        $this->title = '发布素材资源';
+        PluginTelegramChannelResources::mQuery(null, static function (QueryHelper $query) {
             $query->with(['media'])->order('id desc')->page();
         });
     }
 
     /**
-     * 图文列表数据处理
+     * 数据处理
      * @param array $data
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -38,7 +40,7 @@ class Content extends Controller
      */
     protected function _page_filter(array &$data)
     {
-        die(dump($data));
+
     }
 
     /**
@@ -51,7 +53,7 @@ class Content extends Controller
     }
 
     /**
-     * 编辑微信图文
+     * 编辑
      * @auth true
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -63,19 +65,19 @@ class Content extends Controller
         if (empty($this->id)) $this->error('参数错误，请稍候再试！');
         if ($this->request->isGet()) {
             if ($this->request->get('output') === 'json') {
-                $data = PluginTelegramSourceContent::mk()->where('id',$this->id)->with('media')->find()->toArray();
+                $data = PluginTelegramChannelResources::mk()->where('id',$this->id)->with('media')->find()->toArray();
                 $this->success('获取数据成功！', $data);
             } else {
-                $this->title = '编辑微信图文';
+                $this->title = '编辑素材';
                 $this->fetch('form');
             }
         } else {
             $data = $this->request->post('data', []);
             $index = array_search(true, array_column($data, 'caption'));
             $caption = $index !== false ? $data[$index]['caption'] : '';
-            if (PluginTelegramContentMedia::mk()->saveAll($data)) {
-                PluginTelegramSourceContent::mk()->where('id',$this->id)->update(['caption'=>$caption]);
-                $this->success('图文更新成功！', 'javascript:history.back()');
+            if (PluginTelegramResourcesMedia::mk()->saveAll($data)) {
+                PluginTelegramChannelResources::mk()->where('id',$this->id)->update(['caption'=>$caption]);
+                $this->success('素材更新成功！', 'javascript:history.back()');
             } else {
                 $this->error('更新失败，请稍候再试！');
             }
@@ -83,12 +85,11 @@ class Content extends Controller
     }
 
     /**
-     * 删除微信图文
+     * 删除
      * auth true
      */
     public function remove()
     {
-        PluginTelegramSourceContent::mDelete();
+        PluginTelegramChannelResources::mDelete();
     }
-
 }

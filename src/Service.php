@@ -5,6 +5,7 @@ declare (strict_types=1);
 namespace plugin\telegram;
 
 
+use plugin\telegram\command\Hook;
 use think\admin\Plugin;
 
 /**
@@ -32,7 +33,7 @@ class Service extends Plugin
      */
     public function register(): void
     {
-        $this->commands([]);
+        $this->commands([Hook::class]);
     }
 
     /**
@@ -44,12 +45,24 @@ class Service extends Plugin
         $code = self::getAppCode();
         // 设置插件菜单
         return [
-
             [
-                'name' => '内容管理',
+                'name' => '属性配置',
                 'subs' => [
-                    ['name' => '内容管理', 'icon' => 'layui-icon layui-icon-read', 'node' => "{$code}/content.content/index"],
-                    ['name' => '素材管理', 'icon' => 'layui-icon layui-icon-read', 'node' => "{$code}/source.content/index"],
+                    ['name' => 'Telegram属性', 'icon' => 'layui-icon layui-icon-read', 'node' => "{$code}/base.config/index"],
+                ],
+            ],
+            [
+                'name' => '频道管理',
+                'subs' => [
+                    ['name' => '运营素材频道', 'icon' => 'layui-icon layui-icon-read', 'node' => "{$code}/channel.item/index"],
+                    ['name' => '网络素材频道', 'icon' => 'layui-icon layui-icon-read', 'node' => "{$code}/source.item/index"],
+                ],
+            ],
+            [
+                'name' => '素材资源',
+                'subs' => [
+                    ['name' => '频道素材资源', 'icon' => 'layui-icon layui-icon-read', 'node' => "{$code}/channel.resources/index"],
+                    ['name' => '网络素材资源', 'icon' => 'layui-icon layui-icon-read', 'node' => "{$code}/source.resources/index"],
                 ],
             ],
         ];
