@@ -23,7 +23,7 @@
             cols: [[
                 {field: 'id', hide: true},
                 {checkbox: true, fixed: true},
-                {field: 'belong_channel', title: '所属频道', width: 200, align: 'center'},
+                {field: 'belong_channel', title: '所属频道', width: 200, align: 'center',templet:'<div>{{d.channel.channel_title}}</div>'},
                 {field: 'release_message_id', title: '消息ID', width: 100, align: 'center'},
                 {field: 'caption', title: '文本内容', minWidth: 100, align: 'center'},
                 {field: 'type', title: '文本类型', width: 100, align: 'center'},
