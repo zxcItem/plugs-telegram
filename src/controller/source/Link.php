@@ -31,7 +31,7 @@ class Link extends Controller
     {
         PluginTelegramResourcesLink::mQuery()->layTable(function () {
             $this->title = '网络链接素材';
-            $this->source = PluginTelegramChannelSource::getChannelID();
+            $this->source = PluginTelegramChannelSource::getChannelID('channel_title');
         }, function (QueryHelper $query) {
             $query->with('channel')->equal('release_channel_id')->dateBetween('create_at');
         });

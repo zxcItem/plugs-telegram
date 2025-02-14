@@ -185,7 +185,7 @@ class InstallTelegram extends Migrator
 
         PhinxExtend::upgrade($table, [
             ['channel_id', 'biginteger', ['default' => 0, 'null' => true, 'comment' => '频道ID']],
-            ['belong_channel_id', 'biginteger', ['default' => 0, 'null' => true, 'comment' => '所属频道ID']],
+            ['release_channel_id', 'biginteger', ['default' => 0, 'null' => true, 'comment' => '所属频道ID']],
             ['channel_title', 'string', ['limit' => 16, 'default' => NULL, 'null' => true, 'comment' => '频道标题']],
             ['channel_name', 'string', ['limit' => 32, 'default' => NULL, 'null' => true, 'comment' => '频道名']],
             ['channel_link', 'string', ['limit' => 64, 'default' => NULL, 'null' => true, 'comment' => '频道链接']],
