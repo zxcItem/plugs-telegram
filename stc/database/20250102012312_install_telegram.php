@@ -195,7 +195,7 @@ class InstallTelegram extends Migrator
             ['create_at', 'datetime', ['default' => NULL, 'null' => true, 'comment' => '创建时间']],
             ['update_at', 'datetime', ['default' => NULL, 'null' => true, 'comment' => '更新时间']],
         ], [
-            'channel_id','belong_channel_id'
+            'channel_id','release_channel_id'
         ], true);
     }
 }
