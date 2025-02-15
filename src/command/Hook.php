@@ -144,6 +144,7 @@ class Hook extends Command
             PluginTelegramSourceResources::mk()->save($resource);
         }
         PluginTelegramResourcesMedia::mk()->save($resource);
+        $this->setQueueSuccess("图文资源保存成功");
     }
 
     /**

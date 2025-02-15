@@ -6,6 +6,7 @@ namespace plugin\telegram\controller\api;
 
 use plugin\telegram\service\ConfigService;
 use think\admin\Controller;
+use think\admin\extend\CodeExtend;
 use think\admin\service\QueueService;
 use think\exception\HttpResponseException;
 
@@ -24,7 +25,7 @@ class Hook extends Controller
         try {
             // 获取请求的数据
             $result = $this->request->post('');
-            $queue = QueueService::register('推送数据'.time(), 'plugin:telegram:hook', 0, ['data'=>$result]);
+            $queue = QueueService::register('推送数据'.CodeExtend::uniqidNumber(17), 'plugin:telegram:hook', 0, ['data'=>$result]);
             $this->success('创建任务成功！', $queue->code);
         } catch (HttpResponseException $exception) {
             throw $exception;
