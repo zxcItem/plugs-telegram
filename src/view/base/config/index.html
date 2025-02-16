@@ -10,28 +10,28 @@
 <div class="layui-card padding-20 shadow">
     <div class="layui-card-body">
         <div class="layui-form-item">
-            <div class="help-label"><b>Bot Token</b>素材检测</div>
+            <div class="help-label"><b>BotToken</b>网络资源发布</div>
             <label class="relative block">
-                <input readonly value="{$data.bot_token|default=''}" placeholder="请设置机器人Token" class="layui-input layui-bg-gray">
+                <input readonly value="{$data.bot_token|default=''}" placeholder="请设置网络资源发布Token" class="layui-input layui-bg-gray">
                 <a data-copy="{$data.bot_token|default=''}" class="layui-icon layui-icon-release input-right-icon"></a>
             </label>
-            <p class="help-block">Telegram API 接口调用全局参数</p>
+            <p class="help-block">推送收集的资源只有推送Bot有权限进行操作</p>
         </div>
         <div class="layui-form-item">
-            <div class="help-label"><b>Bot Token</b>素材发布</div>
+            <div class="help-label"><b>ForwardToken</b>本地素材发布</div>
             <label class="relative block">
-                <input readonly value="{$data.forward_token|default=''}" placeholder="请设置机器人Token" class="layui-input layui-bg-gray">
+                <input readonly value="{$data.forward_token|default=''}" placeholder="请设置本地素材发布Token" class="layui-input layui-bg-gray">
                 <a data-copy="{$data.forward_token|default=''}" class="layui-icon layui-icon-release input-right-icon"></a>
             </label>
-            <p class="help-block">Telegram API 接口调用全局参数</p>
+            <p class="help-block">本地上传素材发布</p>
         </div>
         <div class="layui-form-item">
-            <div class="help-label"><b>素材转发频道</b>Channel</div>
+            <div class="help-label"><b>素材预览频道</b>Channel</div>
             <label class="relative block">
-                <input readonly value="{$data.forward_channel|default=''}" placeholder="请设置媒体转发频道" class="layui-input layui-bg-gray">
+                <input readonly value="{$data.forward_channel|default=''}" placeholder="请设置素材预览频道" class="layui-input layui-bg-gray">
                 <a data-copy="{$data.forward_channel|default=''}" class="layui-icon layui-icon-release input-right-icon"></a>
             </label>
-            <p class="help-block">获取网络素材时,可转发素材频道查看并自动收录素材数据</p>
+            <p class="help-block">获取网络素材时,可转发素材预览频道查看修改素材数据</p>
         </div>
     </div>
 </div>

@@ -60,6 +60,7 @@ class Hook extends Command
     protected function grouping($data)
     {
         $result = $data['channel_post'];
+        if ($result['chat']['id'] == -1002394253933) $this->setQueueSuccess("素材预览无需操作");
         if (isset($result['entities'])){
             $this->entities($result);
         }
