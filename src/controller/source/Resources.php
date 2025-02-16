@@ -144,7 +144,7 @@ class Resources extends Controller
     public function include()
     {
         $map = $this->_vali(['id.require' => 'ID不可为空！']);
-        $data = PluginTelegramSourceResources::mk()->where($map)->field('channel_id,source_channel_id,media_group_id,caption')->find();
+        $data = PluginTelegramSourceResources::mk()->where($map)->field('channel_id,source_channel_id,media_group_id,caption')->find()->toArray();
         PluginTelegramChannelResources::mk()->save($data);
         PluginTelegramSourceResources::mk()->where($map)->save(['status'=>1]);
         $this->success("收录成功！");

@@ -26,10 +26,14 @@ class SourceService extends Service
         $contents = PluginTelegramResourcesMedia::mk()
             ->where('media_group_id',$media_group_id)
             ->field('caption,type,media')
-            ->order('sort')->select()->toArray();
+            ->order('sort')->select()->map(function ($content){
+                $content['parse_mode'] = 'HTML';
+                return $content;
+            })->toArray();
         return TelegramApi::sendMediaGroup([
-            'chat_id' => ConfigService::get('forward_channel'),
-            'media'   => $contents
-        ],1);
+            'chat_id'    => ConfigService::get('forward_channel'),
+            'media'      => json_encode($contents),
+            'parse_mode' => 'html'
+        ]);
     }
 }

@@ -14,7 +14,7 @@
         {foreach $list as $vo}
         <div class="news-item">
             <div class='news-tools layui-hide'>
-                <a data-open='{:url("preview")}?media_group_id={$vo.media_group_id}' style="cursor:pointer">预览</a>
+                <a data-action='{:url("preview")}?media_group_id={$vo.media_group_id}' style="cursor:pointer">预览</a>
                 <a data-open='{:url("edit")}?id={$vo.id}' style="cursor:pointer">编辑</a>
                 <a data-news-del="{$vo.id}" style="cursor:pointer">删除</a>
             </div>

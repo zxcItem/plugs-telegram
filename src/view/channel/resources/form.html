@@ -47,9 +47,9 @@
                         </select>
                     </div>
                 </div>
-                <div class="layui-form-item">
+                <div class="layui-form-item layui-form-text">
                     <label class="layui-form-label color-green">媒体素材描述</label>
-                    <textarea class="layui-hide" name='caption'></textarea>
+                    <textarea ng-model="item.caption" name="caption" class="layui-textarea" style="height:80px;line-height:18px"></textarea>
                 </div>
                 <div class="layui-form-item text-center padding-top-30">
                     <input ng-model="x.read_num" type="hidden">
@@ -65,7 +65,7 @@
 
 {block name='script'}
 <script>
-    require(['angular', 'ckeditor'], function () {
+    require(['angular'], function () {
 
         let editor;
         $('form[name="news"]').vali(null, function () {
@@ -96,17 +96,6 @@
                     $rootScope.item = $rootScope.list[0];
                     $rootScope.setItemValue('active', true);
                     $('.layui-card-body.layui-hide').removeClass('layui-hide');
-                    setTimeout(function () {
-                        if (editor) editor.destroy();
-                        editor = window.createEditor('[name="caption"]');
-                        if (typeof editor !== 'undefined') {
-                            editor.setData($rootScope.item.caption);
-                            vali.checkAllInput();
-                        } else $('[name="caption"]').on('editor.init', function (event, myEditor) {
-                            (editor = myEditor).setData($rootScope.item.caption);
-                            vali.checkAllInput();
-                        });
-                    }, 100);
                 }
 
                 $rootScope.upItem = function (index, $event) {
