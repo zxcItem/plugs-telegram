@@ -14,21 +14,26 @@ use think\App;
  */
 class TelegramApi extends Service
 {
-    protected static $bot;
 
-    public static function token()
+    public static function token($type = 0)
     {
-        return ConfigService::get('bot_token');
+        if ($type){
+            $token = ConfigService::get('forward_token');
+        }else{
+            $token = ConfigService::get('bot_token');
+        }
+        return $token;
     }
 
     /**
      * 发布集合媒体信息
      * @param $params
+     * @param $type
      * @return mixed
      */
-    public static function sendMediaGroup($params)
+    public static function sendMediaGroup($params,$type = 0)
     {
-        $token = self::token();
+        $token = self::token($type);
         $result = json_decode(http_post("https://api.telegram.org/bot{$token}/sendMediaGroup",$params),true);
         if ($result && $result['ok'] === true){
             return $result;
@@ -39,11 +44,13 @@ class TelegramApi extends Service
     /**
      * 获取文件的地址
      * @param $file_id
+     * @param $
+     * @param int $type
      * @return mixed
      */
-    public static function getFile($file_id)
+    public static function getFile($file_id,$type = 0)
     {
-        $token = self::token();
+        $token = self::token($type);
         $result = json_decode(http_get("https://api.telegram.org/bot{$token}/getFile?file_id={$file_id}"),true);
         if ($result && $result['ok'] === true){
             return "https://api.telegram.org/file/bot{$token}/{$result['result']['file_path']}";
@@ -54,11 +61,12 @@ class TelegramApi extends Service
     /**
      * 获取频道的ID
      * @param $channel_name
+     * @param int $type
      * @return mixed
      */
-    public static function getChat($channel_name)
+    public static function getChat($channel_name,$type = 0)
     {
-        $token = self::token();
+        $token = self::token($type);
         $result = json_decode(http_get("https://api.telegram.org/bot{$token}/getChat?chat_id={$channel_name}"),true);
         if ($result && $result['ok'] === true){
             return $result['result'];

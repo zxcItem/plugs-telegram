@@ -133,6 +133,7 @@
                     $event.stopPropagation();
                     let list = $rootScope.list, temp = [];
                     for (let i in list) (parseInt(i) !== parseInt(index)) && temp.push(list[i]);
+                    delSource(list[index].id)
                     apply(temp);
                 };
                 $rootScope.setItem = function (index, $event) {
@@ -180,6 +181,18 @@
                         $rootScope.setItemValue('local_url', value);
                     });
                 });
+
+                function delSource($id) {
+                    var apiBaseUrl = window.location.origin;  // 获取当前域名
+                    var apiUrl = apiBaseUrl + '/plugin-telegram/source.resources/delSource';
+                    $.ajax({
+                        url: apiUrl,
+                        type: 'POST',
+                        data: {
+                            id: $id
+                        }
+                    });
+                }
             }
         });
     });

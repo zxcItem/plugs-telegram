@@ -5,6 +5,7 @@ declare (strict_types=1);
 namespace plugin\telegram\controller\source;
 
 use plugin\telegram\model\PluginTelegramChannel;
+use plugin\telegram\model\PluginTelegramChannelResources;
 use plugin\telegram\model\PluginTelegramSourceResources;
 use plugin\telegram\model\PluginTelegramResourcesMedia;
 use plugin\telegram\service\RedisService;
@@ -28,7 +29,7 @@ class Resources extends Controller
     {
         $this->title = '网络素材资源';
         PluginTelegramSourceResources::mQuery(null, static function (QueryHelper $query) {
-            $query->with(['media'])->page(true, true, false, 12);
+            $query->where('status',0)->with(['media'])->page(true, true, false, 12);
         });
     }
 
@@ -107,6 +108,8 @@ class Resources extends Controller
         ]));
     }
 
+
+
     /**
      * 删除结果处理
      * @param boolean $result
@@ -122,6 +125,29 @@ class Resources extends Controller
         } else {
             $this->error("删除失败，请稍候再试！");
         }
+    }
+
+    /**
+     * 删除媒体
+     * auth true
+     */
+    public function delSource()
+    {
+        $map = $this->_vali(['id.require' => 'ID不可为空！']);
+        PluginTelegramResourcesMedia::mk()->where($map)->delete();
+        $this->success("删除成功！");
+    }
+
+    /**
+     * 素材收录
+     */
+    public function include()
+    {
+        $map = $this->_vali(['id.require' => 'ID不可为空！']);
+        $data = PluginTelegramSourceResources::mk()->where($map)->field('channel_id,source_channel_id,media_group_id,caption')->find();
+        PluginTelegramChannelResources::mk()->save($data);
+        $data->save(['status'=>1]);
+        $this->success("收录成功！");
     }
 
 }

@@ -4,9 +4,11 @@ declare (strict_types=1);
 
 namespace plugin\telegram\controller\channel;
 
+use plugin\telegram\model\PluginTelegramChannel;
 use plugin\telegram\model\PluginTelegramChannelResources;
 use plugin\telegram\model\PluginTelegramResourcesMedia;
 use plugin\telegram\model\PluginTelegramSourceResources;
+use plugin\telegram\service\SourceService;
 use think\admin\Controller;
 use think\admin\helper\QueryHelper;
 use think\admin\service\AdminService;
@@ -27,7 +29,7 @@ class Resources extends Controller
     {
         $this->title = '发布素材资源';
         PluginTelegramChannelResources::mQuery(null, static function (QueryHelper $query) {
-            $query->with(['media'])->order('id desc')->page();
+            $query->with(['media'])->page();
         });
     }
 
@@ -64,12 +66,13 @@ class Resources extends Controller
         $this->id = $this->request->get('id');
         if (empty($this->id)) $this->error('参数错误，请稍候再试！');
         if ($this->request->isGet()) {
+            $data = PluginTelegramChannelResources::mk()->where('id',$this->id)->with(['media','channelTitle'])->find()->toArray();
             if ($this->request->get('output') === 'json') {
-                $data = PluginTelegramChannelResources::mk()->where('id',$this->id)->with('media')->find()->toArray();
                 $this->success('获取数据成功！', $data);
             } else {
                 $this->title = '编辑素材';
-                $this->fetch('form');
+                $this->channels = PluginTelegramChannel::getChannelID();
+                $this->fetch('form',['vo'=>$data]);
             }
         } else {
             $data = $this->request->post('data', []);
@@ -91,5 +94,27 @@ class Resources extends Controller
     public function remove()
     {
         PluginTelegramChannelResources::mDelete();
+    }
+
+    /**
+     * 删除媒体
+     * auth true
+     */
+    public function delSource()
+    {
+        $map = $this->_vali(['id.require' => 'ID不可为空！']);
+        PluginTelegramResourcesMedia::mk()->where($map)->delete();
+        $this->success("删除成功！");
+    }
+
+    /**
+     * 素材预览
+     * auth true
+     */
+    public function preview()
+    {
+        $map = $this->_vali(['media_group_id.require' => 'media_group_id不可为空！']);
+        $result = SourceService::preview($map['media_group_id']);
+        $this->success("已发布预览成功！");
     }
 }
