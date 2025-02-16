@@ -15,7 +15,6 @@ use think\admin\Exception;
 use think\admin\extend\CodeExtend;
 use think\console\Input;
 use think\console\Output;
-use function Carbon\Traits\is;
 
 /**
  * Telegram WedHook推送
@@ -66,6 +65,9 @@ class Hook extends Command
         }
         if (isset($result['photo'])){
             $this->photo($result);
+        }
+        if (isset($result['video'])){
+            $this->video($result);
         }
     }
 
@@ -118,6 +120,7 @@ class Hook extends Command
     /**
      * 保存图片信息
      * @param $result
+     * @throws Exception
      */
     protected function photo($result)
     {
@@ -139,12 +142,34 @@ class Hook extends Command
             'file_size'         => $maxFile['file_size'],
             'thumbnail'         => $maxFile['file_id'],
         ];
-        if (!self::redisCache($result['media_group_id'])){
-            RedisService::instance()->set("MediaGroupId:{$result['media_group_id']}",$result['media_group_id'],3600);
-            PluginTelegramSourceResources::mk()->save($resource);
-        }
-        PluginTelegramResourcesMedia::mk()->save($resource);
+        $this->saveData($resource);
         $this->setQueueSuccess("图文资源保存成功");
+    }
+
+    /**
+     * 视频资源
+     * @param $result
+     * @throws Exception
+     */
+    protected function video($result)
+    {
+        $media_group_id = CodeExtend::uniqidNumber(17);
+        $resource = [
+            'channel_id'        => $this->getChannelId($result['forward_origin']['chat']['id']),
+            'source_channel_id' => $result['forward_origin']['chat']['id'],
+            'source_message_id' => $result['forward_origin']['message_id'],
+            'message_id'        => $result['message_id'],
+            'media_group_id'    => $result['media_group_id'] ?? $media_group_id,
+            'caption'           => $result['caption'] ?? '',
+            'type'              => 'video/mp4',
+            'media'             => $result['video']['file_id'],
+            'width'             => $result['video']['width'],
+            'height'            => $result['video']['height'],
+            'file_size'         => $result['video']['file_size'],
+            'thumbnail'         => $result['video']['thumbnail']['file_id'],
+        ];
+        $this->saveData($resource);
+        $this->setQueueSuccess("视频资源保存成功");
     }
 
     /**
@@ -171,5 +196,18 @@ class Hook extends Command
             RedisService::instance()->set("channel_source", $channelSources, 3600);
         }
         return $channelSources[$channel] ?? '';
+    }
+
+    /**
+     * 保存数据
+     * @param $resource
+     */
+    protected function saveData($resource)
+    {
+        if (!self::redisCache($resource['media_group_id'])){
+            RedisService::instance()->set("MediaGroupId:{$resource['media_group_id']}",$resource['media_group_id'],3600);
+            PluginTelegramSourceResources::mk()->save($resource);
+        }
+        PluginTelegramResourcesMedia::mk()->save($resource);
     }
 }

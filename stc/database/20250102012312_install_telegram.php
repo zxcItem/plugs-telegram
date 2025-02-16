@@ -108,10 +108,12 @@ class InstallTelegram extends Migrator
             ['media', 'string', ['limit' => 255, 'default' => null, 'null' => true, 'comment' => '媒体文件ID']],
             ['width', 'integer', ['limit' => 10, 'default' => 0, 'null' => true, 'comment' => '宽度']],
             ['height', 'integer', ['limit' => 10, 'default' => 0, 'null' => true, 'comment' => '宽度']],
+            ['duration', 'integer', ['limit' => 10, 'default' => 0, 'null' => true, 'comment' => '时长']],
             ['file_size', 'integer', ['limit' => 10, 'default' => 0, 'null' => true, 'comment' => '文件大小']],
             ['thumbnail', 'string', ['limit' => 255, 'default' => null, 'null' => true, 'comment' => '视频缩略图媒体文件ID']],
-            ['local_url', 'string', ['limit' => 32, 'default' => NULL, 'null' => true, 'comment' => '媒体信息,base64信息']],
+            ['local_url', 'string', ['limit' => 255, 'default' => NULL, 'null' => true, 'comment' => '媒体信息,base64信息']],
             ['sort', 'biginteger', ['default' => 0, 'null' => true, 'comment' => '排序权重']],
+            ['status', 'integer', ['limit' => 1, 'default' => 0, 'null' => true, 'comment' => '状态(0未处理,1已处理)']],
             ['create_at', 'datetime', ['default' => NULL, 'null' => true, 'comment' => '创建时间']],
         ], [
             'media_group_id','type','create_at',

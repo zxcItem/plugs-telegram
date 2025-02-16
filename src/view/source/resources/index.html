@@ -1,10 +1,12 @@
 {extend name="main"}
 
 {block name="button"}
-
-{if auth('add')}
-<button data-open="{:url('add')}" class='layui-btn layui-btn-sm layui-btn-primary'>添加图文</button>
-{/if}
+<!--{if auth("thumbnail")}-->
+<a class="layui-btn layui-btn-sm layui-btn-primary" data-queue="{:url('thumbnail')}">自动刷新文件信息</a>
+<!--{/if}-->
+<!--{if auth('add')}-->
+<button data-open="{:url('add')}" class='layui-btn layui-btn-sm layui-btn-primary'>添加素材</button>
+<!--{/if}-->
 
 {/block}
 
@@ -15,7 +17,7 @@
         <div class="news-item">
             <div class='news-tools layui-hide'>
                 <a data-open='{:url("edit")}?id={$vo.id}' style="cursor:pointer">编辑</a>
-                <a data-news-del="{$vo.id}" style="cursor:pointer">删除</a>
+                <a data-news-del="{$vo.media_group_id}" style="cursor:pointer">删除</a>
             </div>
             {foreach $vo.media as $k => $v}
                 {if count($vo.media) == 1}
@@ -60,8 +62,8 @@
         var newsbox = document.querySelector('#news-box');
         var msnry = new Masonry(newsbox, {itemSelector: '.news-item', columnWidth: 0});
         msnry.layout(), $('body').on('click', '[data-news-del]', function (event) {
-            $.msg.confirm('确定要删除图文吗？', function (index) {
-                $.msg.close(index), $.form.load('{:url("remove")}', {value: 0, field: 'delete', id: $(event.target).data('news-del')}, 'post', function (ret) {
+            $.msg.confirm('确定要删除素材吗？', function (index) {
+                $.msg.close(index), $.form.load('{:url("remove")}', {value: 0, field: 'delete', media_group_id: $(event.target).data('news-del')}, 'post', function (ret) {
                     if (ret.code) {
                         $(event.target).parents('.news-item').remove();
                         msnry = new Masonry(newsbox, {itemSelector: '.news-item', columnWidth: 0});

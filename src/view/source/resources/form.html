@@ -3,11 +3,11 @@
 {block name="style"}{include file='source/resources/formstyle'}{/block}
 
 {block name='content'}
-<div id="NewsEditor" class="layui-clear nowrap padding-bottom-30">
+<div id="NewsEditor" class="layui-clear layui-form-pane nowrap padding-bottom-30">
     <div class="layui-card news-left">
         <div class="layui-card-body layui-hide">
             <div ng-if="list.length > 0" ng-repeat="x in list" class="img-info">
-                <div class="news-item transition" ng-click="setItem($index,$event)" style="{{x.style}}" ng-class="x.active?'active':''">
+                <div class="news-item transition" ng-click="setItem($index,$event)" data-tips-image='{{x.local_url}}' style="{{x.style}}" ng-class="x.active?'active':''">
                     <a ng-click="delItem($index, $event)" class="transition layui-icon layui-hide">&#x1006;</a>
                     <a ng-click="dnItem($index, $event)" class="transition layui-icon layui-hide">&#xe61a;</a>
                     <a ng-click="upItem($index, $event)" class="transition layui-icon layui-hide">&#xe619;</a>
@@ -28,26 +28,28 @@
     <div class="layui-card news-right">
         <div class="layui-card-body">
             <form class="layui-form padding-20" role="form" name="news" onsubmit="return false">
-                <div class="layui-form-item label-required-prev">
-                    <span class="color-green">图文封面大图片</span>
-                    <div class="layui-clear">
-                        <div class="upload-image-box pull-left transition" data-tips-image="{{item.local_url}}" style="{{item.style}}">
-                            <input ng-model="item.local_url" data-auto-none value="{{item.local_url}}" type="hidden" name="local_url">
-                        </div>
-                        <div class="pull-left padding-top-15 padding-left-15">
-                            <button type="button" data-title="上传图片" data-file="btn" data-type="jpg,png,jpeg" data-field="local_url" class="layui-btn layui-btn-sm layui-btn-primary">上传图片</button>
-
-                            <br>
-                            <label class="think-checkbox notselect margin-top-15">
-                                <input ng-model="item.show_cover_pic" ng-checked="!!item.show_cover_pic" data-auto-none type="checkbox" value="1" name="show_cover_pic" lay-ignore> 在正文顶部显示此图片
-
-                            </label>
-                        </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label color-green">素材来源频道</label>
+                    <div class="layui-input-block">
+                        <input value="{$vo.channel_title|default=''}" readonly class="layui-input layui-bg-gray">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <span class="color-green">图文文章内容</span>
-                    <textarea class="layui-hide" ng-model="item.caption" name='caption'></textarea>
+                    <label class="layui-form-label color-green">素材归档频道</label>
+                    <div class="layui-input-block">
+                        <select class="layui-select" name="channel_id">
+                            {foreach $channels as $k=>$v}
+                            {if isset($vo.channel_id) and $vo.channel_id eq $k}
+                            <option selected value="{$k}">{$v}</option>
+                            {else}
+                            <option value="{$k}">{$v}</option>
+                            {/if}{/foreach}
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label color-green">媒体素材描述</label>
+                    <textarea class="layui-hide" name='caption'></textarea>
                 </div>
                 <div class="layui-form-item text-center padding-top-30">
                     <input ng-model="x.read_num" type="hidden">
@@ -159,13 +161,18 @@
                 $rootScope.submit = function () {
                     if (!vali.checkAllInput()) return false;
                     $rootScope.item.caption = editor.getData();
-                    let data = [];
+                    let data = [];let channel = {};
                     for (let i in $rootScope.list) data.push({
                         id: $rootScope.list[i].id,
                         caption: $rootScope.list[i].caption,
+                        sort: i,
                         local_url: $rootScope.list[i].local_url,
                     });
-                    $.form.load('{:request()->url()}', {data: data}, "post");
+                    channel = {
+                        'channel_id':document.getElementsByName('channel_id')[0].value,
+                        'caption':$rootScope.list[0].caption
+                    }
+                    $.form.load('{:request()->url()}', {data: data,channel: channel}, "post");
                 };
                 $('[name="local_url"]').on('change', function () {
                     let value = this.value;

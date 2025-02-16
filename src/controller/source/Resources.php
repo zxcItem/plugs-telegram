@@ -4,8 +4,11 @@ declare (strict_types=1);
 
 namespace plugin\telegram\controller\source;
 
+use plugin\telegram\model\PluginTelegramChannel;
 use plugin\telegram\model\PluginTelegramSourceResources;
 use plugin\telegram\model\PluginTelegramResourcesMedia;
+use plugin\telegram\service\RedisService;
+use plugin\telegram\service\TelegramApi;
 use think\admin\Controller;
 use think\admin\helper\QueryHelper;
 
@@ -25,7 +28,7 @@ class Resources extends Controller
     {
         $this->title = '网络素材资源';
         PluginTelegramSourceResources::mQuery(null, static function (QueryHelper $query) {
-            $query->with(['media'])->order('id desc')->page();
+            $query->with(['media'])->page(true, true, false, 12);
         });
     }
 
@@ -62,19 +65,21 @@ class Resources extends Controller
         $this->id = $this->request->get('id');
         if (empty($this->id)) $this->error('参数错误，请稍候再试！');
         if ($this->request->isGet()) {
+            $data = PluginTelegramSourceResources::mk()
+                ->where('id',$this->id)
+                ->with(['media','channelTitle'])->find()->toArray();
             if ($this->request->get('output') === 'json') {
-                $data = PluginTelegramSourceResources::mk()->where('id',$this->id)->with('media')->find()->toArray();
                 $this->success('获取数据成功！', $data);
             } else {
                 $this->title = '编辑素材';
-                $this->fetch('form');
+                $this->channels = PluginTelegramChannel::getChannelID();
+                $this->fetch('form',['vo'=>$data]);
             }
         } else {
             $data = $this->request->post('data', []);
-            $index = array_search(true, array_column($data, 'caption'));
-            $caption = $index !== false ? $data[$index]['caption'] : '';
+            $channel = $this->request->post('channel', []);
             if (PluginTelegramResourcesMedia::mk()->saveAll($data)) {
-                PluginTelegramSourceResources::mk()->where('id',$this->id)->update(['caption'=>$caption]);
+                PluginTelegramSourceResources::mk()->where('id',$this->id)->update($channel);
                 $this->success('素材更新成功！', 'javascript:history.back()');
             } else {
                 $this->error('更新失败，请稍候再试！');
@@ -83,12 +88,40 @@ class Resources extends Controller
     }
 
     /**
+     * 自动刷新文件信息
+     * @auth true
+     */
+    public function thumbnail()
+    {
+        $this->_queue('自动刷新资源信息', "plugin:telegram:thumbnail", 0,[],0,600);
+    }
+
+    /**
      * 删除
      * auth true
      */
     public function remove()
     {
-        PluginTelegramSourceResources::mDelete();
+        PluginTelegramSourceResources::mDelete('media_group_id',$this->_vali([
+            'media_group_id.require' => '组合编号不能为空！',
+        ]));
+    }
+
+    /**
+     * 删除结果处理
+     * @param boolean $result
+     * @throws \think\Exception
+     * @throws \think\exception
+     */
+    protected function _remove_delete_result($result)
+    {
+        if ($result) {
+            $where = ['media_group_id' => $this->request->post('media_group_id')];
+            PluginTelegramResourcesMedia::mk()->where($where)->delete();
+            $this->success("删除成功！", '');
+        } else {
+            $this->error("删除失败，请稍候再试！");
+        }
     }
 
 }

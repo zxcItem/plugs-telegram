@@ -48,7 +48,7 @@ class Item extends Controller
     protected function _page_filter(array &$data)
     {
         $this->channel = PluginTelegramChannel::getChannelID();
-        foreach ($data as &$datum) $datum['belong_channel'] = $this->channel[$datum['belong_channel_id']] ?? '';
+        foreach ($data as &$datum) $datum['release_channel'] = $this->channel[$datum['release_channel_id']] ?? '';
     }
 
     /**

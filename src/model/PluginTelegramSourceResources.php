@@ -17,4 +17,9 @@ class PluginTelegramSourceResources extends Abs
     {
         return $this->hasMany(PluginTelegramResourcesMedia::class,'media_group_id','media_group_id');
     }
+
+    public function channelTitle()
+    {
+        return $this->belongsTo(PluginTelegramChannelSource::class,'source_channel_id','channel_id')->bind(['channel_title']);
+    }
 }
