@@ -4,6 +4,9 @@
 <!--{if auth("thumbnail")}-->
 <a class="layui-btn layui-btn-sm layui-btn-primary" data-queue="{:url('thumbnail')}">自动刷新文件信息</a>
 <!--{/if}-->
+<!--{if auth("include")}-->
+<a data-action='{:url("include")}' data-rule="id#{key}" class='layui-btn layui-btn-sm layui-btn-primary'>批量收录</a>
+<!--{/if}-->
 <!--{if auth('add')}-->
 <button data-open="{:url('add')}" class='layui-btn layui-btn-sm layui-btn-primary'>添加素材</button>
 <!--{/if}-->
@@ -12,13 +15,23 @@
 
 {block name='content'}
 <div class="think-box-shadow">
+    {include file='source/resources/index_search'}
     <div id="news-box" class="layui-clear layui-hide">
         {foreach $list as $vo}
         <div class="news-item">
-            <div class='news-tools layui-hide'>
-                <a data-action='{:url("include")}?id={$vo.id}' style="cursor:pointer">收录</a>
-                <a data-open='{:url("edit")}?id={$vo.id}' style="cursor:pointer">编辑</a>
-                <a data-news-del="{$vo.media_group_id}" style="cursor:pointer">删除</a>
+            <div class="layui-form-item margin-bottom-0">
+                <div class="layui-col-xs7">
+                    <input class="list-check-box" type='checkbox' value="{$vo.id}">
+                </div>
+                <div class="layui-col-xs5" style="display: flex; justify-content: flex-end;">
+                    <div class="layui-col-xs3"><a class="color-green" data-action='{:url("include")}?id={$vo.id}'>收录</a></div>
+                    <div class="layui-col-xs3"><a class="color-blue" data-open='{:url("edit")}?id={$vo.id}'>编辑</a></div>
+                    <div class="layui-col-xs3"><a class="color-red" data-news-del="{$vo.media_group_id}">删除</a></div>
+                </div>
+            </div>
+            <div class="layui-form-item font-s12 margin-bottom-0">
+                <p style="float: left">{$vo.source.channel_title|default=''}</p>
+                <p style="float: right">{$vo.channel.channel_title|default=''}</p>
             </div>
             {foreach $vo.media as $k => $v}
                 {if count($vo.media) == 1}
@@ -161,11 +174,6 @@
         text-align: right;
         position: absolute;
         background: rgba(0, 0, 0, .7)
-    }
-
-    #news-box .news-tools a {
-        color: #fff;
-        margin-left: 10px
     }
 </style>
 {/block}

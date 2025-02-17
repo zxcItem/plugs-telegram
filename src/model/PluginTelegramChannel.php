@@ -13,8 +13,8 @@ namespace plugin\telegram\model;
 class PluginTelegramChannel extends Abs
 {
 
-    public static function getChannelID()
+    public static function getChannelID($field = '*')
     {
-        return self::mk()->where('status',1)->column('channel_title','channel_id');
+        return self::mk()->where('status',1)->column($field,'channel_id');
     }
 }

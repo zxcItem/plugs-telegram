@@ -10,13 +10,23 @@
 
 {block name='content'}
 <div class="think-box-shadow">
+    {include file='channel/resources/index_search'}
     <div id="news-box" class="layui-clear layui-hide">
         {foreach $list as $vo}
         <div class="news-item">
-            <div class='news-tools layui-hide'>
-                <a data-action='{:url("preview")}?media_group_id={$vo.media_group_id}' style="cursor:pointer">预览</a>
-                <a data-open='{:url("edit")}?id={$vo.id}' style="cursor:pointer">编辑</a>
-                <a data-news-del="{$vo.id}" style="cursor:pointer">删除</a>
+            <div class="layui-form-item margin-bottom-0">
+                <div class="layui-col-xs7">
+                    <input class="list-check-box" type='checkbox' value="{$vo.id}">
+                </div>
+                <div class="layui-col-xs5" style="display: flex; justify-content: flex-end;">
+                    <div class="layui-col-xs3"><a class="color-green" data-action='{:url("preview")}?media_group_id={$vo.media_group_id}'>预览</a></div>
+                    <div class="layui-col-xs3"><a class="color-blue" data-open='{:url("edit")}?id={$vo.id}'>编辑</a></div>
+                    <div class="layui-col-xs3"><a class="color-red" data-news-del="{$vo.media_group_id}">删除</a></div>
+                </div>
+            </div>
+            <div class="layui-form-item font-s12 margin-bottom-0">
+                <p style="float: left">{$vo.source.channel_title|default=''}</p>
+                <p style="float: right">{$vo.channel.channel_title|default=''}</p>
             </div>
             {foreach $vo.media as $k => $v}
             {if count($vo.media) == 1}

@@ -150,7 +150,6 @@
                 };
                 $rootScope.submit = function () {
                     if (!vali.checkAllInput()) return false;
-                    $rootScope.item.caption = editor.getData();
                     let data = [];let channel = {};
                     for (let i in $rootScope.list) data.push({
                         id: $rootScope.list[i].id,

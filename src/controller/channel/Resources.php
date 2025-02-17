@@ -6,6 +6,7 @@ namespace plugin\telegram\controller\channel;
 
 use plugin\telegram\model\PluginTelegramChannel;
 use plugin\telegram\model\PluginTelegramChannelResources;
+use plugin\telegram\model\PluginTelegramChannelSource;
 use plugin\telegram\model\PluginTelegramResourcesMedia;
 use plugin\telegram\model\PluginTelegramSourceResources;
 use plugin\telegram\service\SourceService;
@@ -28,8 +29,10 @@ class Resources extends Controller
     public function index()
     {
         $this->title = '发布素材资源';
+        $this->source = PluginTelegramChannelSource::getChannelID('channel_title');
+        $this->channel = PluginTelegramChannel::getChannelID('channel_title');
         PluginTelegramChannelResources::mQuery(null, static function (QueryHelper $query) {
-            $query->with(['media'])->page();
+            $query->with(['media','source','channel'])->page();
         });
     }
 
@@ -66,12 +69,12 @@ class Resources extends Controller
         $this->id = $this->request->get('id');
         if (empty($this->id)) $this->error('参数错误，请稍候再试！');
         if ($this->request->isGet()) {
-            $data = PluginTelegramChannelResources::mk()->where('id',$this->id)->with(['media','channelTitle'])->find()->toArray();
+            $data = PluginTelegramChannelResources::mk()->where('id',$this->id)->with(['media','source'])->find()->toArray();
             if ($this->request->get('output') === 'json') {
                 $this->success('获取数据成功！', $data);
             } else {
                 $this->title = '编辑素材';
-                $this->channels = PluginTelegramChannel::getChannelID();
+                $this->channels = PluginTelegramChannel::getChannelID('channel_title');
                 $this->fetch('form',['vo'=>$data]);
             }
         } else {

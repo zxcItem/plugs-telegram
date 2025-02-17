@@ -31,7 +31,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label color-green">素材来源频道</label>
                     <div class="layui-input-block">
-                        <input value="{$vo.channel_title|default=''}" readonly class="layui-input layui-bg-gray">
+                        <input value="{$vo.source.channel_title|default=''}" readonly class="layui-input layui-bg-gray">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -150,7 +150,6 @@
                 };
                 $rootScope.submit = function () {
                     if (!vali.checkAllInput()) return false;
-                    $rootScope.item.caption = editor.getData();
                     let data = [];let channel = {};
                     for (let i in $rootScope.list) data.push({
                         id: $rootScope.list[i].id,

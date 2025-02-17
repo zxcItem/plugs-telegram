@@ -6,6 +6,7 @@ namespace plugin\telegram\controller\source;
 
 use plugin\telegram\model\PluginTelegramChannel;
 use plugin\telegram\model\PluginTelegramChannelResources;
+use plugin\telegram\model\PluginTelegramChannelSource;
 use plugin\telegram\model\PluginTelegramSourceResources;
 use plugin\telegram\model\PluginTelegramResourcesMedia;
 use plugin\telegram\service\RedisService;
@@ -28,8 +29,12 @@ class Resources extends Controller
     public function index()
     {
         $this->title = '网络素材资源';
+        $this->source = PluginTelegramChannelSource::getChannelID('channel_title');
+        $this->channel = PluginTelegramChannel::getChannelID('channel_title');
         PluginTelegramSourceResources::mQuery(null, static function (QueryHelper $query) {
-            $query->where('status',0)->with(['media'])->page(true, true, false, 12);
+            $query->where('status',0)
+                ->equal('source_channel_id')
+                ->with(['media','source','channel'])->page(true, true, false, 12);
         });
     }
 
@@ -68,12 +73,12 @@ class Resources extends Controller
         if ($this->request->isGet()) {
             $data = PluginTelegramSourceResources::mk()
                 ->where('id',$this->id)
-                ->with(['media','channelTitle'])->find()->toArray();
+                ->with(['media','source'])->find()->toArray();
             if ($this->request->get('output') === 'json') {
                 $this->success('获取数据成功！', $data);
             } else {
                 $this->title = '编辑素材';
-                $this->channels = PluginTelegramChannel::getChannelID();
+                $this->channels = PluginTelegramChannel::getChannelID('channel_title');
                 $this->fetch('form',['vo'=>$data]);
             }
         } else {
@@ -144,9 +149,9 @@ class Resources extends Controller
     public function include()
     {
         $map = $this->_vali(['id.require' => 'ID不可为空！']);
-        $data = PluginTelegramSourceResources::mk()->where($map)->field('channel_id,source_channel_id,media_group_id,caption')->find()->toArray();
-        PluginTelegramChannelResources::mk()->save($data);
-        PluginTelegramSourceResources::mk()->where($map)->save(['status'=>1]);
+        $data = PluginTelegramSourceResources::mk()->whereIn('id',$map['id'])->field('channel_id,source_channel_id,media_group_id,caption')->select()->toArray();
+        PluginTelegramChannelResources::mk()->saveAll($data);
+        PluginTelegramSourceResources::mk()->whereIn('id',$map['id'])->save(['status'=>1]);
         $this->success("收录成功！");
     }
 
