@@ -45,7 +45,7 @@ class Data extends Controller
                 if (empty($ext) || !in_array(strtolower($ext), ['png', 'jpg', 'jpeg'])) {
                     $this->error('图片格式异常！');
                 }
-                $name = Storage::name($img, $ext,date('ymd'));
+                $name = self::name($img, $ext,date('ymd'));
                 $info = Storage::instance()->set($name, base64_decode($img));
                 $this->success('图片上传成功！', ['url' => $info['url']]);
             } else {
@@ -57,6 +57,21 @@ class Data extends Controller
             trace_file($exception);
             $this->error($exception->getMessage());
         }
+    }
+
+    /**
+     * 获取文件相对名称
+     * @param string $url 文件访问链接
+     * @param string $ext 文件后缀名称
+     * @param string $pre 文件存储前缀
+     * @param string $fun 名称规则方法
+     * @return string
+     */
+    public static function name(string $url, string $ext = '', string $pre = '', string $fun = 'md5'): string
+    {
+        [$hah, $ext] = [$fun($url), trim($ext ?: pathinfo($url, 4), '.\\/')];
+        $attr = [trim($pre, '.\\/'), substr($hah, 2, 30)];
+        return trim(join('/', $attr), '/') . '.' . strtolower($ext ?: 'tmp');
     }
 
     /**
