@@ -41,7 +41,7 @@ class Thumbnail extends Command
             $imageData = file_get_contents($file_path);
             if ($imageData !== false) {
                 $base64Image = "data:image/png;base64,".base64_encode($imageData);
-                $file = self::upload($base64Image);$media->save(['local_url'=>$file]);
+                $file = self::upload($base64Image);$media->where('id',$media['id'])->save(['local_url'=>$file]);
 //                if (!self::redisCache($media['thumbnail'])){
 //                    RedisService::instance()->set("MediaThumbnail:{$media['thumbnail']}",$base64Image);
 //                }
