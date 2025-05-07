@@ -48,8 +48,9 @@
                             <div data-tips-image='{$v.local_url}' data-lazy-src="{$v.local_url}"></div>
                         </div>
                     {else}
-                        <div class='news-articel-item other img-info-item'>
-                            <video data-video-player='{$v.local_url}' src="{$v.local_url|default=''}" width="33%"></video>
+                        <div class='news-articel-item other img-info-item text-right'>
+                            <a target="_blank" data-video-player="{$v.local_url}"><div data-lazy-src="{$v.thumbnail}"><b class="color-red font-s14">video</b></div></a>
+
                         </div>
                     {/if}
                 {/if}
