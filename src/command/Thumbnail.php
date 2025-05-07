@@ -36,7 +36,7 @@ class Thumbnail extends Command
             $this->queue->message($total, ++$count, "刷新素材 [{$media['id']}] 数据...");
             $file_path = TelegramApi::getFile($media['thumbnail']);
             $video_path = null;
-            if ($media['type'] == 'video') $video_path = TelegramApi::getFile($media['media']);
+            if ($media['type'] == 'video/mp4') $video_path = TelegramApi::getFile($media['media']);
             $media->save(['status'=>1,'local_url'=>$file_path,'video_url'=>$video_path]);
             $imageData = file_get_contents($file_path);
             if ($imageData !== false) {
