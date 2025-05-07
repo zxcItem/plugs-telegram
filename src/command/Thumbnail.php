@@ -41,9 +41,10 @@ class Thumbnail extends Command
             $imageData = file_get_contents($file_path);
             if ($imageData !== false) {
                 $base64Image = "data:image/png;base64,".base64_encode($imageData);
-                if (!self::redisCache($media['thumbnail'])){
-                    RedisService::instance()->set("MediaThumbnail:{$media['thumbnail']}",$base64Image);
-                }
+                $file = self::upload($base64Image);$media->save(['local_url'=>$file]);
+//                if (!self::redisCache($media['thumbnail'])){
+//                    RedisService::instance()->set("MediaThumbnail:{$media['thumbnail']}",$base64Image);
+//                }
             }
             $this->queue->message($total, $count, "刷新素材 [{$media['id']}] 数据成功", 1);
         } catch (\Exception $exception) {
@@ -61,5 +62,14 @@ class Thumbnail extends Command
     {
         $base64Image = RedisService::instance()->get("MediaThumbnail:{$thumbnail}");
         return $base64Image ? true : false;
+    }
+
+
+    protected function upload($base64)
+    {
+        $result =json_decode(http_post("https://resource.mrzhou.top/plugin-telegram/api.data/image",['base64'=>$base64]),true);
+        if ($result && $result['code'] == 1){
+            return $result['data']['key'];
+        }
     }
 }

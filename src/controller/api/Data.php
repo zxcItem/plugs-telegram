@@ -7,6 +7,7 @@ namespace plugin\telegram\controller\api;
 use plugin\telegram\service\TelegramApi;
 use think\admin\Controller;
 use think\admin\Storage;
+use Exception;
 use think\exception\HttpResponseException;
 
 /**
@@ -28,6 +29,32 @@ class Data extends Controller
         } catch (HttpResponseException $exception) {
             throw $exception;
         } catch (\Exception $exception) {
+            $this->error($exception->getMessage());
+        }
+    }
+
+    /**
+     * Base64 图片上传
+     */
+    public function image()
+    {
+        try {
+            $data = $this->_vali(['base64.require' => '图片内容不为空！']);
+            if (preg_match($preg = '|^data:image/(.*?);base64,|i', $data['base64'])) {
+                [$ext, $img] = explode('|||', preg_replace($preg, '$1|||', $data['base64']));
+                if (empty($ext) || !in_array(strtolower($ext), ['png', 'jpg', 'jpeg'])) {
+                    $this->error('图片格式异常！');
+                }
+                $name = Storage::name($img, $ext, 'image/');
+                $info = Storage::instance()->set($name, base64_decode($img));
+                $this->success('图片上传成功！', ['url' => $info['url']]);
+            } else {
+                $this->error('解析内容失败！');
+            }
+        } catch (HttpResponseException $exception) {
+            throw $exception;
+        } catch (Exception $exception) {
+            trace_file($exception);
             $this->error($exception->getMessage());
         }
     }
