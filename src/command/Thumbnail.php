@@ -35,7 +35,9 @@ class Thumbnail extends Command
         foreach (PluginTelegramResourcesMedia::mk()->where('status',0)->limit(10)->field('id,thumbnail')->cursor() as $media) try {
             $this->queue->message($total, ++$count, "刷新素材 [{$media['id']}] 数据...");
             $file_path = TelegramApi::getFile($media['thumbnail']);
-            $media->save(['status'=>1,'local_url'=>$file_path]);
+            $video_path = null;
+            if ($media['type'] == 'video') $video_path = TelegramApi::getFile($media['media']);
+            $media->save(['status'=>1,'local_url'=>$file_path,'video_url'=>$video_path]);
             $imageData = file_get_contents($file_path);
             if ($imageData !== false) {
                 $base64Image = "data:image/png;base64,".base64_encode($imageData);
