@@ -82,7 +82,7 @@ class Resources extends Controller
             $index = array_search(true, array_column($data, 'caption'));
             $caption = $index !== false ? $data[$index]['caption'] : '';
             if (PluginTelegramResourcesMedia::mk()->saveAll($data)) {
-                PluginTelegramChannelResources::mk()->where('id',$this->id)->update(['caption'=>$caption,'channel_id'=>input('channel_id')]);
+                PluginTelegramChannelResources::mk()->where('id',$this->id)->update(['caption'=>$caption,'channel_id'=>input('channel.channel_id')]);
                 $this->success('素材更新成功！', 'javascript:history.back()');
             } else {
                 $this->error('更新失败，请稍候再试！');
