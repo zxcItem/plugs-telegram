@@ -45,7 +45,7 @@ class Data extends Controller
                 if (empty($ext) || !in_array(strtolower($ext), ['png', 'jpg', 'jpeg'])) {
                     $this->error('图片格式异常！');
                 }
-                $name = Storage::name($img, $ext);
+                $name = Storage::name($img, $ext,date('ymd'));
                 $info = Storage::instance()->set($name, base64_decode($img));
                 $this->success('图片上传成功！', ['url' => $info['url']]);
             } else {
