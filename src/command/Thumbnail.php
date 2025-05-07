@@ -69,7 +69,7 @@ class Thumbnail extends Command
     {
         $result =json_decode(http_post("https://resource.mrzhou.top/plugin-telegram/api.data/image",['base64'=>$base64]),true);
         if ($result && $result['code'] == 1){
-            return $result['data']['key'];
+            return $result['data']['url'];
         }
     }
 }
