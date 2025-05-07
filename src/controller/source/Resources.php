@@ -34,7 +34,7 @@ class Resources extends Controller
         PluginTelegramSourceResources::mQuery(null, static function (QueryHelper $query) {
             $query->where('status',0)
                 ->equal('source_channel_id')
-                ->with(['media','source','channel'])->page(true, true, false, 12);
+                ->with(['media','source','channel'])->page(true, true, false, 20);
         });
     }
 
