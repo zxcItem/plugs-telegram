@@ -32,7 +32,7 @@ class Thumbnail extends Command
     protected function execute(Input $input, Output $output)
     {
         [$total, $count] = [10, 0];
-        foreach (PluginTelegramResourcesMedia::mk()->where('status',0)->limit(10)->field('id,thumbnail,type,media')->cursor() as $media) try {
+        foreach (PluginTelegramResourcesMedia::mk()->where('status',0)->limit(10)->field('id,thumbnail,type,media,source_channel_id')->cursor() as $media) try {
             $this->queue->message($total, ++$count, "刷新素材 [{$media['id']}] 数据...");
             $file_path = TelegramApi::getFile($media['thumbnail']);
             $video_path = null;
@@ -41,7 +41,7 @@ class Thumbnail extends Command
             $imageData = file_get_contents($file_path);
             if ($imageData !== false) {
                 $base64Image = "data:image/png;base64,".base64_encode($imageData);
-                $file = self::upload($base64Image);$media->where('id',$media['id'])->save(['local_url'=>$file]);
+                $file = self::upload($base64Image,$media['source_channel_id']);$media->where('id',$media['id'])->save(['local_url'=>$file]);
 //                if (!self::redisCache($media['thumbnail'])){
 //                    RedisService::instance()->set("MediaThumbnail:{$media['thumbnail']}",$base64Image);
 //                }
@@ -65,9 +65,9 @@ class Thumbnail extends Command
     }
 
 
-    protected function upload($base64)
+    protected function upload($base64,$channel_id)
     {
-        $result =json_decode(http_post("https://resource.mrzhou.top/plugin-telegram/api.data/image",['base64'=>$base64]),true);
+        $result =json_decode(http_post("https://resource.mrzhou.top/plugin-telegram/api.data/image",['base64'=>$base64,'channel_id'=>$channel_id]),true);
         if ($result && $result['code'] == 1){
             return $result['data']['url'];
         }

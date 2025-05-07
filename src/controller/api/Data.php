@@ -39,13 +39,13 @@ class Data extends Controller
     public function image()
     {
         try {
-            $data = $this->_vali(['base64.require' => '图片内容不为空！']);
+            $data = $this->_vali(['base64.require' => '图片内容不为空！','channel_id.default'=>date('ymd')]);
             if (preg_match($preg = '|^data:image/(.*?);base64,|i', $data['base64'])) {
                 [$ext, $img] = explode('|||', preg_replace($preg, '$1|||', $data['base64']));
                 if (empty($ext) || !in_array(strtolower($ext), ['png', 'jpg', 'jpeg'])) {
                     $this->error('图片格式异常！');
                 }
-                $name = self::name($img, $ext,date('ymd'));
+                $name = self::name($img, $ext,abs($data['channel_id']).'/'.date('ymd'));
                 $info = Storage::instance()->set($name, base64_decode($img));
                 $this->success('图片上传成功！', ['url' => $info['url']]);
             } else {
