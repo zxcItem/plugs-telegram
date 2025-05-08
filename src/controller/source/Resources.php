@@ -154,7 +154,7 @@ class Resources extends Controller
         PluginTelegramChannelResources::mk()->saveAll($data);
         PluginTelegramSourceResources::mk()->whereIn('id',$map['id'])->save(['status'=>1]);
         $media_group_id = array_column($data,'media_group_id');
-        QueueService::instance()->register("自动刷新文件地址",'xdata:Remote',0,['group_id'=>$media_group_id]);
+        QueueService::instance()->register("自动刷新文件地址",'plugin:telegram:Remote',0,['group_id'=>$media_group_id]);
         $this->success("收录成功！");
     }
 
