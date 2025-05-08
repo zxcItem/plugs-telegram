@@ -111,6 +111,17 @@ class Resources extends Controller
     }
 
     /**
+     * 素材预览
+     * auth true
+     */
+    public function preview()
+    {
+        $map = $this->_vali(['media_group_id.require' => 'media_group_id不可为空！']);
+        $result = SourceService::preview($map['media_group_id']);
+        $this->success("已发布预览成功！");
+    }
+
+    /**
      * 素材自动发布
      * auth true
      */
