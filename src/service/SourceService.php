@@ -33,7 +33,7 @@ class SourceService extends Service
         return TelegramApi::sendMediaGroup([
             'chat_id'    => ConfigService::get('forward_channel'),
             'media'      => json_encode($contents),
-            'parse_mode' => 'html'
+            'parse_mode' => 'HTML'
         ]);
     }
 }
