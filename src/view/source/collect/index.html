@@ -2,15 +2,12 @@
 
 {block name="button"}
 
-{if auth('add')}
-<button data-open="{:url('add')}" class='layui-btn layui-btn-sm layui-btn-primary'>添加图文</button>
-{/if}
 
 {/block}
 
 {block name='content'}
 <div class="think-box-shadow">
-    {include file='channel/resources/index_search'}
+    {include file='source/collect/index_search'}
     <div id="news-box" class="layui-clear layui-hide">
         {foreach $list as $vo}
         <div class="news-item">
@@ -19,7 +16,6 @@
                     <input class="list-check-box" type='checkbox' value="{$vo.id}">
                 </div>
                 <div class="layui-col-xs5" style="display: flex; justify-content: flex-end;">
-                    <div class="layui-col-xs3"><a class="color-green" data-action='{:url("preview")}?media_group_id={$vo.media_group_id}'>预览</a></div>
                     <div class="layui-col-xs3"><a class="color-blue" data-open='{:url("edit")}?id={$vo.id}'>编辑</a></div>
                     <div class="layui-col-xs3"><a class="color-red" data-news-del="{$vo.media_group_id}">删除</a></div>
                 </div>
@@ -31,20 +27,20 @@
             {foreach $vo.media as $k => $v}
                 {if count($vo.media) == 1}
                     {if $v.type == 'photo'}
-                        <div data-tips-image='{$v.local_url}' data-lazy-src="{$v.local_url}" class='news-articel-item'></div>
+                        <div data-tips-image='{$v.file_url}' data-lazy-src="{$v.file_url}" class='news-articel-item'></div>
                         <div class="hr-line-dashed"></div>
                     {else}
-                        <video data-video-player='{$v.video_url}' src="{$v.local_url|default=''}" width="100%" autoplay loop muted></video>
+                        <video data-video-player='{$v.video_url}' src="{$v.file_url|default=''}" width="100%" autoplay loop muted></video>
                         <div class="hr-line-dashed"></div>
                     {/if}
                 {else}
                     {if $v.type == 'photo'}
                         <div class='news-articel-item other img-info-item'>
-                            <div data-tips-image='{$v.local_url}' data-lazy-src="{$v.local_url}"></div>
+                            <div data-tips-image='{$v.file_url}' data-lazy-src="{$v.file_url}"></div>
                         </div>
                     {else}
                         <div class='news-articel-item other img-info-item text-right'>
-                            <a target="_blank" data-video-player="{$v.video_url}"><div data-lazy-src="{$v.local_url}"><b class="color-red font-s14">video</b></div></a>
+                            <a target="_blank" data-video-player="{$v.video_url}"><div data-lazy-src="{$v.file_url}"><b class="color-red font-s14">video</b></div></a>
                         </div>
                     {/if}
                 {/if}
@@ -71,8 +67,8 @@
         var newsbox = document.querySelector('#news-box');
         var msnry = new Masonry(newsbox, {itemSelector: '.news-item', columnWidth: 0});
         msnry.layout(), $('body').on('click', '[data-news-del]', function (event) {
-            $.msg.confirm('确定要删除图文吗？', function (index) {
-                $.msg.close(index), $.form.load('{:url("remove")}', {value: 0, field: 'delete', id: $(event.target).data('news-del')}, 'post', function (ret) {
+            $.msg.confirm('确定要删除素材吗？', function (index) {
+                $.msg.close(index), $.form.load('{:url("remove")}', {value: 0, field: 'delete', media_group_id: $(event.target).data('news-del')}, 'post', function (ret) {
                     if (ret.code) {
                         $(event.target).parents('.news-item').remove();
                         msnry = new Masonry(newsbox, {itemSelector: '.news-item', columnWidth: 0});
@@ -169,11 +165,6 @@
         text-align: right;
         position: absolute;
         background: rgba(0, 0, 0, .7)
-    }
-
-    #news-box .news-tools a {
-        color: #fff;
-        margin-left: 10px
     }
 </style>
 {/block}

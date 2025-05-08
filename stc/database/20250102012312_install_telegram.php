@@ -63,6 +63,32 @@ class InstallTelegram extends Migrator
     }
 
     /**
+     * 素材收藏
+     * @class PluginTelegramChannelCollect
+     * @table plugin_telegram_channel_collect
+     * @return void
+     */
+    private function _create_plugin_telegram_channel_collect()
+    {
+        // 创建数据表对象
+        $table = $this->table('plugin_telegram_channel_collect', [
+            'engine' => 'InnoDB', 'collation' => 'utf8mb4_general_ci', 'comment' => '素材收藏',
+        ]);
+        PhinxExtend::upgrade($table, [
+            ['channel_id', 'biginteger', ['default' => 0, 'null' => true, 'comment' => '归档频道ID']],
+            ['source_channel_id', 'biginteger', ['default' => 0, 'null' => true, 'comment' => '来源频道ID']],
+            ['message_id', 'biginteger', ['default' => 0, 'null' => true, 'comment' => '频道消息ID']],
+            ['media_group_id', 'string', ['limit' => 32,'default' => 0, 'null' => true, 'comment' => '组合消息ID']],
+            ['caption', 'text', ['default' => NULL, 'null' => true, 'comment' => '消息内容']],
+            ['sort', 'biginteger', ['default' => 0, 'null' => true, 'comment' => '排序权重']],
+            ['status', 'integer', ['limit' => 1, 'default' => 0, 'null' => true, 'comment' => '状态(0未处理,1已处理)']],
+            ['create_at', 'datetime', ['default' => NULL, 'null' => true, 'comment' => '创建时间']],
+        ], [
+            'channel_id','source_channel_id','media_group_id','message_id','create_at',
+        ], true);
+    }
+
+    /**
      * 网络素材资源管理
      * @class PluginTelegramSourceResources
      * @table plugin_telegram_source_resources

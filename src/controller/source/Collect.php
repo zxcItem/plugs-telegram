@@ -5,7 +5,7 @@ declare (strict_types=1);
 namespace plugin\telegram\controller\source;
 
 use plugin\telegram\model\PluginTelegramChannel;
-use plugin\telegram\model\PluginTelegramChannelResources;
+use plugin\telegram\model\PluginTelegramChannelCollect;
 use plugin\telegram\model\PluginTelegramChannelSource;
 use plugin\telegram\model\PluginTelegramSourceResources;
 use plugin\telegram\model\PluginTelegramResourcesMedia;
@@ -16,23 +16,23 @@ use think\admin\helper\QueryHelper;
 use think\admin\service\QueueService;
 
 /**
- * 网络素材资源
+ * 网络素材收藏
  * @class Content
  * @package plugin\telegram\controller\source
  */
-class Resources extends Controller
+class Collect extends Controller
 {
     /**
-     * 网络素材资源
+     * 网络素材收藏
      * @auth true
      * @menu true
      */
     public function index()
     {
-        $this->title = '网络素材资源';
+        $this->title = '网络素材收藏';
         $this->source = PluginTelegramChannelSource::getChannelID('channel_title');
         $this->channel = PluginTelegramChannel::getChannelID('channel_title');
-        PluginTelegramSourceResources::mQuery(null, static function (QueryHelper $query) {
+        PluginTelegramChannelCollect::mQuery(null, static function (QueryHelper $query) {
             $query->where('status',0)
                 ->equal('source_channel_id')
                 ->with(['media','source','channel'])->page(true, true, false, 20);
@@ -72,7 +72,7 @@ class Resources extends Controller
         $this->id = $this->request->get('id');
         if (empty($this->id)) $this->error('参数错误，请稍候再试！');
         if ($this->request->isGet()) {
-            $data = PluginTelegramSourceResources::mk()
+            $data = PluginTelegramChannelCollect::mk()
                 ->where('id',$this->id)
                 ->with(['media','source'])->find()->toArray();
             if ($this->request->get('output') === 'json') {
@@ -86,7 +86,7 @@ class Resources extends Controller
             $data = $this->request->post('data', []);
             $channel = $this->request->post('channel', []);
             if (PluginTelegramResourcesMedia::mk()->saveAll($data)) {
-                PluginTelegramSourceResources::mk()->where('id',$this->id)->update($channel);
+                PluginTelegramChannelCollect::mk()->where('id',$this->id)->update($channel);
                 $this->success('素材更新成功！', 'javascript:history.back()');
             } else {
                 $this->error('更新失败，请稍候再试！');
@@ -95,21 +95,12 @@ class Resources extends Controller
     }
 
     /**
-     * 自动刷新文件信息
-     * @auth true
-     */
-    public function thumbnail()
-    {
-        $this->_queue('自动刷新资源信息', "plugin:telegram:thumbnail", 0,[],0,600);
-    }
-
-    /**
      * 删除
      * auth true
      */
     public function remove()
     {
-        PluginTelegramSourceResources::mDelete('media_group_id',$this->_vali([
+        PluginTelegramChannelCollect::mDelete('media_group_id',$this->_vali([
             'media_group_id.require' => '组合编号不能为空！',
         ]));
     }
@@ -145,14 +136,15 @@ class Resources extends Controller
     }
 
     /**
-     * 素材收录
+     * 素材收藏
      */
     public function include()
     {
         $map = $this->_vali(['id.require' => 'ID不可为空！']);
         $data = PluginTelegramSourceResources::mk()->whereIn('id',$map['id'])->field('channel_id,source_channel_id,media_group_id,caption')->select()->toArray();
-        PluginTelegramChannelResources::mk()->saveAll($data);
-        PluginTelegramSourceResources::mk()->whereIn('id',$map['id'])->save(['status'=>1]);
+        PluginTelegramChannelCollect::mk()->saveAll($data);
+        $media_group_id = implode(',',array_column($data,'media_group_id'));
+        QueueService::instance()->register("自动刷新文件地址",'plugin:telegram:Remote',0,['group_id'=>$media_group_id]);
         $this->success("收录成功！");
     }
 
