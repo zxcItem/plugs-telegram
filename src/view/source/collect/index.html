@@ -25,25 +25,27 @@
                 <p style="float: right">{$vo.channel.channel_title|default=''}</p>
             </div>
             {foreach $vo.media as $k => $v}
+            <div style="text-align: center">
                 {if count($vo.media) == 1}
-                    {if $v.type == 'photo'}
-                        <div data-tips-image='{$v.file_url}' data-lazy-src="{$v.file_url}" class='news-articel-item'></div>
-                        <div class="hr-line-dashed"></div>
-                    {else}
-                        <video data-video-player='{$v.video_url}' src="{$v.file_url|default=''}" width="100%" autoplay loop muted></video>
-                        <div class="hr-line-dashed"></div>
-                    {/if}
+                {if $v.type == 'photo'}
+                <div data-tips-image='{$v.local_url}' data-lazy-src="{$v.local_url}" class='news-articel-item'></div>
+                <div class="hr-line-dashed"></div>
                 {else}
-                    {if $v.type == 'photo'}
-                        <div class='news-articel-item other img-info-item'>
-                            <div data-tips-image='{$v.file_url}' data-lazy-src="{$v.file_url}"></div>
-                        </div>
-                    {else}
-                        <div class='news-articel-item other img-info-item text-right'>
-                            <a target="_blank" data-video-player="{$v.video_url}"><div data-lazy-src="{$v.file_url}"><b class="color-red font-s14">video</b></div></a>
-                        </div>
-                    {/if}
+                <video data-video-player='{$v.video_url}' data-lazy-src="{$v.local_url|default=''}" style="height: 250px;width: 150px"></video>
+                <div class="hr-line-dashed"></div>
                 {/if}
+                {else}
+                {if $v.type == 'photo'}
+                <div class='news-articel-item other img-info-item'>
+                    <div data-tips-image='{$v.local_url}' data-lazy-src="{$v.local_url}"></div>
+                </div>
+                {else}
+                <div class='news-articel-item other img-info-item text-right'>
+                    <a target="_blank" data-video-player="{$v.video_url}"><div data-lazy-src="{$v.local_url}"><b class="color-red font-s14">video</b></div></a>
+                </div>
+                {/if}
+                {/if}
+            </div>
             {/foreach}
             <div class="layui-form-item font-s12 margin-bottom-0"><p>{$vo.caption|default=''|raw}</p></div>
         </div>
@@ -104,7 +106,7 @@
     }
 
     #news-box .news-item .news-articel-item {
-        height: 150px;
+        height: 300px;
     }
     #news-box .news-item .img-info-item {
         float: left;
