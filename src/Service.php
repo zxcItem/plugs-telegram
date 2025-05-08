@@ -6,6 +6,7 @@ namespace plugin\telegram;
 
 
 use plugin\telegram\command\Hook;
+use plugin\telegram\command\Remote;
 use plugin\telegram\command\Thumbnail;
 use think\admin\Plugin;
 
@@ -34,7 +35,7 @@ class Service extends Plugin
      */
     public function register(): void
     {
-        $this->commands([Hook::class,Thumbnail::class]);
+        $this->commands([Hook::class,Thumbnail::class,Remote::class]);
     }
 
     /**
