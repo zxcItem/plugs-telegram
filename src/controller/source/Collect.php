@@ -100,39 +100,7 @@ class Collect extends Controller
      */
     public function remove()
     {
-        PluginTelegramChannelCollect::mDelete('media_group_id',$this->_vali([
-            'media_group_id.require' => '组合编号不能为空！',
-        ]));
-    }
-
-
-
-    /**
-     * 删除结果处理
-     * @param boolean $result
-     * @throws \think\Exception
-     * @throws \think\exception
-     */
-    protected function _remove_delete_result($result)
-    {
-        if ($result) {
-            $where = ['media_group_id' => $this->request->post('media_group_id')];
-            PluginTelegramResourcesMedia::mk()->where($where)->delete();
-            $this->success("删除成功！", '');
-        } else {
-            $this->error("删除失败，请稍候再试！");
-        }
-    }
-
-    /**
-     * 删除媒体
-     * auth true
-     */
-    public function delSource()
-    {
-        $map = $this->_vali(['id.require' => 'ID不可为空！']);
-        PluginTelegramResourcesMedia::mk()->where($map)->delete();
-        $this->success("删除成功！");
+        PluginTelegramChannelCollect::mDelete();
     }
 
     /**
