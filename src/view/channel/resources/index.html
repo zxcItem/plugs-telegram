@@ -1,7 +1,9 @@
 {extend name="main"}
 
 {block name="button"}
-
+<!--{if auth("release")}-->
+<a class="layui-btn layui-btn-sm layui-btn-primary" data-queue="{:url('release')}">素材自动发布</a>
+<!--{/if}-->
 {if auth('add')}
 <button data-open="{:url('add')}" class='layui-btn layui-btn-sm layui-btn-primary'>添加图文</button>
 {/if}

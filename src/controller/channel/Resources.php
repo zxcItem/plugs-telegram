@@ -120,4 +120,13 @@ class Resources extends Controller
         $result = SourceService::preview($map['media_group_id']);
         $this->success("已发布预览成功！");
     }
+
+    /**
+     * 素材自动发布
+     * auth true
+     */
+    public function release()
+    {
+        $this->_queue('素材自动发布', "plugin:telegram:Release", 0,[],0,600);
+    }
 }
