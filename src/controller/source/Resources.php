@@ -101,7 +101,7 @@ class Resources extends Controller
      */
     public function thumbnail()
     {
-        $this->_queue('自动刷新资源信息', "plugin:telegram:thumbnail", 0,[],0,600);
+        $this->_queue('自动刷新资源信息', "plugin:telegram:thumbnail", 0,[],0,60);
     }
 
     /**
