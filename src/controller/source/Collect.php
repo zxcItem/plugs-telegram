@@ -103,17 +103,4 @@ class Collect extends Controller
         PluginTelegramChannelCollect::mDelete();
     }
 
-    /**
-     * 素材收藏
-     */
-    public function include()
-    {
-        $map = $this->_vali(['id.require' => 'ID不可为空！']);
-        $data = PluginTelegramSourceResources::mk()->whereIn('id',$map['id'])->field('channel_id,source_channel_id,media_group_id,caption')->select()->toArray();
-        PluginTelegramChannelCollect::mk()->saveAll($data);
-        $media_group_id = implode(',',array_column($data,'media_group_id'));
-        QueueService::instance()->register("自动刷新文件地址",'plugin:telegram:Remote',0,['group_id'=>$media_group_id]);
-        $this->success("收录成功！");
-    }
-
 }

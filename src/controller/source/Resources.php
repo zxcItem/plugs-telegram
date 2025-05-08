@@ -5,6 +5,7 @@ declare (strict_types=1);
 namespace plugin\telegram\controller\source;
 
 use plugin\telegram\model\PluginTelegramChannel;
+use plugin\telegram\model\PluginTelegramChannelCollect;
 use plugin\telegram\model\PluginTelegramChannelResources;
 use plugin\telegram\model\PluginTelegramChannelSource;
 use plugin\telegram\model\PluginTelegramSourceResources;
@@ -154,6 +155,19 @@ class Resources extends Controller
         PluginTelegramChannelResources::mk()->saveAll($data);
         PluginTelegramSourceResources::mk()->whereIn('id',$map['id'])->save(['status'=>1]);
         $this->success("收录成功！");
+    }
+
+    /**
+     * 素材收藏
+     */
+    public function collect()
+    {
+        $map = $this->_vali(['id.require' => 'ID不可为空！']);
+        $data = PluginTelegramSourceResources::mk()->whereIn('id',$map['id'])->field('channel_id,source_channel_id,media_group_id,caption')->select()->toArray();
+        PluginTelegramChannelCollect::mk()->saveAll($data);
+        $media_group_id = implode(',',array_column($data,'media_group_id'));
+        QueueService::instance()->register("自动刷新文件地址",'plugin:telegram:Remote',0,['group_id'=>$media_group_id]);
+        $this->success("收藏成功！");
     }
 
 }

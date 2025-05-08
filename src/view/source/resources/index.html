@@ -4,6 +4,9 @@
 <!--{if auth("thumbnail")}-->
 <a class="layui-btn layui-btn-sm layui-btn-primary" data-queue="{:url('thumbnail')}">自动刷新文件信息</a>
 <!--{/if}-->
+<!--{if auth("collect")}-->
+<a data-action='{:url("collect")}' data-rule="id#{key}" class='layui-btn layui-btn-sm layui-btn-primary'>批量收藏</a>
+<!--{/if}-->
 <!--{if auth("include")}-->
 <a data-action='{:url("include")}' data-rule="id#{key}" class='layui-btn layui-btn-sm layui-btn-primary'>批量收录</a>
 <!--{/if}-->
@@ -24,7 +27,7 @@
                     <input class="list-check-box" type='checkbox' value="{$vo.id}">
                 </div>
                 <div class="layui-col-xs5" style="display: flex; justify-content: flex-end;">
-                    <div class="layui-col-xs3"><a class="color-green" data-action='{:url("source/collect/include")}?id={$vo.id}'>收藏</a></div>
+                    <div class="layui-col-xs3"><a class="color-green" data-action='{:url("collect")}?id={$vo.id}'>收藏</a></div>
                     <div class="layui-col-xs3"><a class="color-green" data-action='{:url("include")}?id={$vo.id}'>收录</a></div>
                     <div class="layui-col-xs3"><a class="color-blue" data-open='{:url("edit")}?id={$vo.id}'>编辑</a></div>
                     <div class="layui-col-xs3"><a class="color-red" data-news-del="{$vo.media_group_id}">删除</a></div>
