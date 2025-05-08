@@ -39,7 +39,8 @@ class Remote extends Command
             $imageData = file_get_contents($file_path);
             if ($imageData !== false) {
                 $base64Image = "data:image/png;base64,".base64_encode($imageData);
-                $file = self::upload($base64Image,$media['source_channel_id']);$media->where('id',$media['id'])->save(['file_url'=>$file]);
+                $file = self::upload($base64Image,$media['source_channel_id']);
+                PluginTelegramResourcesMedia::mk()->where('id',$media['id'])->save(['file_url'=>$file]);
             }
             $this->queue->message($total, $count, "刷新素材 [{$media['id']}] 数据成功", 1);
         } catch (\Exception $exception) {
