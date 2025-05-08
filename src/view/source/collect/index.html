@@ -68,7 +68,7 @@
         var msnry = new Masonry(newsbox, {itemSelector: '.news-item', columnWidth: 0});
         msnry.layout(), $('body').on('click', '[data-news-del]', function (event) {
             $.msg.confirm('确定要删除素材吗？', function (index) {
-                $.msg.close(index), $.form.load('{:url("remove")}', {value: 0, field: 'delete', media_group_id: $(event.target).data('news-del')}, 'post', function (ret) {
+                $.msg.close(index), $.form.load('{:url("remove")}', {value: 0, field: 'delete', id: $(event.target).data('news-del')}, 'post', function (ret) {
                     if (ret.code) {
                         $(event.target).parents('.news-item').remove();
                         msnry = new Masonry(newsbox, {itemSelector: '.news-item', columnWidth: 0});
