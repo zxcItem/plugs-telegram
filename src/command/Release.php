@@ -63,13 +63,13 @@ class Release extends Command
             ->where('media_group_id',$group_id)
             ->field('caption,type,media')
             ->order('sort')->select()->map(function ($content){
+                if ($content['type'] == 'video/mp4') $content['type'] = 'video';
                 $content['parse_mode'] = 'HTML';
                 return $content;
             })->toArray();
         return TelegramApi::sendMediaGroup([
             'chat_id'    => $chat_id,
-            'media'      => json_encode($contents),
-            'parse_mode' => 'html'
+            'media'      => json_encode($contents)
         ],1);
     }
 }
