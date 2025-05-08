@@ -22,7 +22,7 @@
                 </div>
                 <div class="layui-col-xs6" style="display: flex; justify-content: flex-end;">
                     {if $vo.status == 1}
-                    <div class="layui-col-xs3"><a class="color-red">已发布</a></div>
+                    <div class="layui-col-xs4"><a class="color-red">已发布</a></div>
                     {/if}
                     <div class="layui-col-xs3"><a class="color-green" data-action='{:url("preview")}?media_group_id={$vo.media_group_id}'>预览</a></div>
                     <div class="layui-col-xs3"><a class="color-blue" data-open='{:url("edit")}?id={$vo.id}'>编辑</a></div>
