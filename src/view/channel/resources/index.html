@@ -21,7 +21,7 @@
                     <input class="list-check-box" type='checkbox' value="{$vo.id}">
                 </div>
                 <div class="layui-col-xs5" style="display: flex; justify-content: flex-end;">
-                    {if $v.status == 1}
+                    {if $vo.status == 1}
                     <div class="layui-col-xs3"><a class="color-red">已发布</a></div>
                     {/if}
                     <div class="layui-col-xs3"><a class="color-blue" data-open='{:url("edit")}?id={$vo.id}'>编辑</a></div>
