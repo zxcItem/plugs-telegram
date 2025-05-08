@@ -27,7 +27,13 @@
                     <input class="list-check-box" type='checkbox' value="{$vo.id}">
                 </div>
                 <div class="layui-col-xs5" style="display: flex; justify-content: flex-end;">
-                    <div class="layui-col-xs3"><a class="color-green" data-action='{:url("collect")}?id={$vo.id}'>收藏</a></div>
+                    <div class="layui-col-xs3">
+                        {if $v.collect == 0}
+                            <a class="color-green" data-action='{:url("collect")}?id={$vo.id}'>收藏</a>
+                        {else}
+                            <a class="color-red">已收藏</a>
+                        {/if}
+                    </div>
                     <div class="layui-col-xs3"><a class="color-green" data-action='{:url("include")}?id={$vo.id}'>收录</a></div>
                     <div class="layui-col-xs3"><a class="color-blue" data-open='{:url("edit")}?id={$vo.id}'>编辑</a></div>
                     <div class="layui-col-xs3"><a class="color-red" data-news-del="{$vo.media_group_id}">删除</a></div>
