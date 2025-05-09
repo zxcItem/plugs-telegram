@@ -31,7 +31,8 @@ class Thumbnail extends Command
     protected function execute(Input $input, Output $output)
     {
         [$total, $count] = [10, 0];
-        foreach (PluginTelegramResourcesMedia::mk()->where('status',0)->whereTime('time','<',time())->limit(10)->field('id,thumbnail,type,media,source_channel_id')->cursor() as $media) try {
+        $where = [['status','=',0],['time','<',time()]];
+        foreach (PluginTelegramResourcesMedia::mk()->where($where)->limit(10)->field('id,thumbnail,type,media,source_channel_id')->cursor() as $media) try {
             $this->queue->message($total, ++$count, "刷新素材 [{$media['id']}] 数据...");
             $file_path = TelegramApi::getFile($media['thumbnail']);
             $video_path = null;
