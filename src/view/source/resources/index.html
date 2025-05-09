@@ -10,6 +10,9 @@
 <!--{if auth("include")}-->
 <a data-action='{:url("include")}' data-rule="id#{key}" class='layui-btn layui-btn-sm layui-btn-primary'>批量收录</a>
 <!--{/if}-->
+<!--{if auth("remove")}-->
+<a data-action='{:url("remove")}' data-rule="id#{key}" class='layui-btn layui-btn-sm layui-btn-primary'>批量删除</a>
+<!--{/if}-->
 <!--{if auth('add')}-->
 <button data-open="{:url('add')}" class='layui-btn layui-btn-sm layui-btn-primary'>添加素材</button>
 <!--{/if}-->
@@ -34,7 +37,7 @@
                     </div>
                     <div class="layui-col-xs3"><a class="color-green" data-action='{:url("include")}?id={$vo.id}'>收录</a></div>
                     <div class="layui-col-xs3"><a class="color-blue" data-open='{:url("edit")}?id={$vo.id}'>编辑</a></div>
-                    <div class="layui-col-xs3"><a class="color-red" data-news-del="{$vo.media_group_id}">删除</a></div>
+                    <div class="layui-col-xs3"><a class="color-red" data-news-del="{$vo.id}">删除</a></div>
                 </div>
             </div>
             <div class="layui-form-item font-s12 margin-bottom-0">
@@ -88,7 +91,7 @@
         var msnry = new Masonry(newsbox, {itemSelector: '.news-item', columnWidth: 0});
         msnry.layout(), $('body').on('click', '[data-news-del]', function (event) {
             $.msg.confirm('确定要删除素材吗？', function (index) {
-                $.msg.close(index), $.form.load('{:url("remove")}', {value: 0, field: 'delete', media_group_id: $(event.target).data('news-del')}, 'post', function (ret) {
+                $.msg.close(index), $.form.load('{:url("remove")}', {value: 0, field: 'delete', id: $(event.target).data('news-del')}, 'post', function (ret) {
                     if (ret.code) {
                         $(event.target).parents('.news-item').remove();
                         msnry = new Masonry(newsbox, {itemSelector: '.news-item', columnWidth: 0});

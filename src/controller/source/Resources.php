@@ -110,29 +110,12 @@ class Resources extends Controller
      */
     public function remove()
     {
-        PluginTelegramSourceResources::mDelete('media_group_id',$this->_vali([
-            'media_group_id.require' => '组合编号不能为空！',
-        ]));
+        $id = $this->request->post('id');
+        $media_group_id = PluginTelegramSourceResources::mk()->whereIn('id',$id)->column('media_group_id');
+        PluginTelegramResourcesMedia::mk()->whereIn('media_group_id',$media_group_id)->delete();
+        PluginTelegramSourceResources::mDelete();
     }
 
-
-
-    /**
-     * 删除结果处理
-     * @param boolean $result
-     * @throws \think\Exception
-     * @throws \think\exception
-     */
-    protected function _remove_delete_result($result)
-    {
-        if ($result) {
-            $where = ['media_group_id' => $this->request->post('media_group_id')];
-            PluginTelegramResourcesMedia::mk()->where($where)->delete();
-            $this->success("删除成功！", '');
-        } else {
-            $this->error("删除失败，请稍候再试！");
-        }
-    }
 
     /**
      * 删除媒体
