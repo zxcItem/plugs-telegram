@@ -37,14 +37,14 @@ class Thumbnail extends Command
             $file_path = TelegramApi::getFile($media['thumbnail']);
             $video_path = null;
             if ($media['type'] == 'video/mp4') $video_path = TelegramApi::getFile($media['media']);
-            $media->save(['status'=>1,'local_url'=>$file_path,'video_url'=>$video_path]);
+
             $imageData = file_get_contents($file_path);
             if ($imageData !== false) {
                 $base64Image = "data:image/png;base64,".base64_encode($imageData);
-                $media->save(['local_url'=>$base64Image]);
-                if (!self::redisCache($media['thumbnail'])){
-                    RedisService::instance()->set("MediaThumbnail:{$media['thumbnail']}",$base64Image);
-                }
+                $media->save(['status'=>1,'local_url'=>$base64Image,'video_url'=>$video_path]);
+//                if (!self::redisCache($media['thumbnail'])){
+//                    RedisService::instance()->set("MediaThumbnail:{$media['thumbnail']}",$base64Image);
+//                }
             }
             $this->queue->message($total, $count, "刷新素材 [{$media['id']}] 数据成功", 1);
         } catch (\Exception $exception) {
