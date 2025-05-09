@@ -31,12 +31,12 @@ class Thumbnail extends Command
     protected function execute(Input $input, Output $output)
     {
         [$total, $count] = [10, 0];
-        foreach (PluginTelegramResourcesMedia::mk()->where('status',0)->limit(10)->field('id,thumbnail,type,media,source_channel_id')->cursor() as $media) try {
+        foreach (PluginTelegramResourcesMedia::mk()->where('status',0)->whereTime('time','<',time())->limit(10)->field('id,thumbnail,type,media,source_channel_id')->cursor() as $media) try {
             $this->queue->message($total, ++$count, "刷新素材 [{$media['id']}] 数据...");
             $file_path = TelegramApi::getFile($media['thumbnail']);
             $video_path = null;
             if ($media['type'] == 'video/mp4') $video_path = TelegramApi::getFile($media['media']);
-            $media->save(['status'=>1,'local_url'=>$file_path,'video_url'=>$video_path]);
+            $media->save(['status'=>1,'local_url'=>$file_path,'video_url'=>$video_path,'time'=>time()+43200]);
             $this->queue->message($total, $count, "刷新素材 [{$media['id']}] 数据成功", 1);
         } catch (\Exception $exception) {
             $this->queue->message($total, $count, "刷新素材 [{$media['id']}] 数据失败, {$exception->getMessage()}", 1);

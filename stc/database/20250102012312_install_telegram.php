@@ -140,6 +140,7 @@ class InstallTelegram extends Migrator
             ['local_url', 'string', ['limit' => 255, 'default' => NULL, 'null' => true, 'comment' => '媒体信息,base64信息']],
             ['video_url', 'string', ['limit' => 255, 'default' => NULL, 'null' => true, 'comment' => '视频地址']],
             ['file_url', 'string', ['limit' => 255, 'default' => NULL, 'null' => true, 'comment' => '远程链接']],
+            ['time', 'biginteger', ['default' => 0, 'null' => true, 'comment' => '失效时间']],
             ['sort', 'biginteger', ['default' => 0, 'null' => true, 'comment' => '排序权重']],
             ['status', 'integer', ['limit' => 1, 'default' => 0, 'null' => true, 'comment' => '状态(0未处理,1已处理)']],
             ['create_at', 'datetime', ['default' => NULL, 'null' => true, 'comment' => '创建时间']],
