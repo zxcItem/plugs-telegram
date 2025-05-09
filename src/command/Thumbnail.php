@@ -37,14 +37,11 @@ class Thumbnail extends Command
             $file_path = TelegramApi::getFile($media['thumbnail']);
             $video_path = null;
             if ($media['type'] == 'video/mp4') $video_path = TelegramApi::getFile($media['media']);
-
             $imageData = file_get_contents($file_path);
             if ($imageData !== false) {
                 $base64Image = "data:image/png;base64,".base64_encode($imageData);
-                $media->save(['status'=>1,'local_url'=>$base64Image,'video_url'=>$video_path]);
-//                if (!self::redisCache($media['thumbnail'])){
-//                    RedisService::instance()->set("MediaThumbnail:{$media['thumbnail']}",$base64Image);
-//                }
+                $file = self::upload($base64Image,$media['source_channel_id']);
+                $media->save(['status'=>1,'local_url'=>$file,'video_url'=>$video_path]);
             }
             $this->queue->message($total, $count, "刷新素材 [{$media['id']}] 数据成功", 1);
         } catch (\Exception $exception) {
@@ -53,14 +50,11 @@ class Thumbnail extends Command
         $this->setQueueSuccess("此次共处理 {$total} 个刷新操作。");
     }
 
-    /**
-     * 检测是否已存在thumbnail
-     * @param $thumbnail
-     * @return bool
-     */
-    protected function redisCache($thumbnail)
+    protected function upload($base64,$channel_id)
     {
-        $base64Image = RedisService::instance()->get("MediaThumbnail:{$thumbnail}");
-        return $base64Image ? true : false;
+        $result =json_decode(http_post("https://resource.mrzhou.top/plugin-telegram/api.data/image",['base64'=>$base64,'channel_id'=>$channel_id]),true);
+        if ($result && $result['code'] == 1){
+            return $result['data']['url'];
+        }
     }
 }

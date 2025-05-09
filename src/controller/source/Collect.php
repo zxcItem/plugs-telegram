@@ -7,13 +7,9 @@ namespace plugin\telegram\controller\source;
 use plugin\telegram\model\PluginTelegramChannel;
 use plugin\telegram\model\PluginTelegramChannelCollect;
 use plugin\telegram\model\PluginTelegramChannelSource;
-use plugin\telegram\model\PluginTelegramSourceResources;
 use plugin\telegram\model\PluginTelegramResourcesMedia;
-use plugin\telegram\service\RedisService;
-use plugin\telegram\service\TelegramApi;
 use think\admin\Controller;
 use think\admin\helper\QueryHelper;
-use think\admin\service\QueueService;
 
 /**
  * 网络素材收藏
