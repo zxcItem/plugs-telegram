@@ -41,7 +41,7 @@ class Thumbnail extends Command
             if ($imageData !== false) {
                 $base64Image = "data:image/png;base64,".base64_encode($imageData);
                 $file = self::upload($base64Image,$media['source_channel_id']);
-                $media->save(['status'=>1,'local_url'=>$file,'video_url'=>$video_path]);
+                $media->where('id',$media['id'])->save(['status'=>1,'local_url'=>$file,'video_url'=>$video_path]);
             }
             $this->queue->message($total, $count, "刷新素材 [{$media['id']}] 数据成功", 1);
         } catch (\Exception $exception) {
