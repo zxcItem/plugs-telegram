@@ -4,6 +4,7 @@
 namespace plugin\telegram\command;
 
 use plugin\telegram\model\PluginTelegramResourcesMedia;
+use plugin\telegram\service\RedisService;
 use plugin\telegram\service\TelegramApi;
 use think\admin\Command;
 use think\console\Input;
@@ -31,16 +32,35 @@ class Thumbnail extends Command
     protected function execute(Input $input, Output $output)
     {
         [$total, $count] = [10, 0];
-        foreach (PluginTelegramResourcesMedia::mk()->whereTime('time','<',time())->limit(10)->field('id,thumbnail,type,media,source_channel_id')->cursor() as $media) try {
+        foreach (PluginTelegramResourcesMedia::mk()->where('status',0)->limit(10)->field('id,thumbnail,type,media,source_channel_id')->cursor() as $media) try {
             $this->queue->message($total, ++$count, "刷新素材 [{$media['id']}] 数据...");
             $file_path = TelegramApi::getFile($media['thumbnail']);
             $video_path = null;
             if ($media['type'] == 'video/mp4') $video_path = TelegramApi::getFile($media['media']);
-            $media->save(['status'=>1,'local_url'=>$file_path,'video_url'=>$video_path,'time'=>time()+43200]);
+            $media->save(['status'=>1,'local_url'=>$file_path,'video_url'=>$video_path]);
+            $imageData = file_get_contents($file_path);
+            if ($imageData !== false) {
+                $base64Image = "data:image/png;base64,".base64_encode($imageData);
+                $media->save(['local_url'=>$base64Image]);
+                if (!self::redisCache($media['thumbnail'])){
+                    RedisService::instance()->set("MediaThumbnail:{$media['thumbnail']}",$base64Image);
+                }
+            }
             $this->queue->message($total, $count, "刷新素材 [{$media['id']}] 数据成功", 1);
         } catch (\Exception $exception) {
             $this->queue->message($total, $count, "刷新素材 [{$media['id']}] 数据失败, {$exception->getMessage()}", 1);
         }
         $this->setQueueSuccess("此次共处理 {$total} 个刷新操作。");
+    }
+
+    /**
+     * 检测是否已存在thumbnail
+     * @param $thumbnail
+     * @return bool
+     */
+    protected function redisCache($thumbnail)
+    {
+        $base64Image = RedisService::instance()->get("MediaThumbnail:{$thumbnail}");
+        return $base64Image ? true : false;
     }
 }
