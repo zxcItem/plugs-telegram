@@ -130,10 +130,10 @@ class Hook extends Command
             return ($carry === null || $item['file_size'] > $carry['file_size']) ? $item : $carry;
         });
         $resource = [
-            'channel_id'        => $this->getChannelId($result['forward_origin']['chat']['id']),
-            'source_channel_id' => $result['forward_origin']['chat']['id'],
-            'source_message_id' => $result['forward_origin']['message_id'],
-            'message_id'        => $result['message_id'],
+            'channel_id'        => $this->getChannelId($result['forward_from_chat']['id']),
+            'source_channel_id' => $result['forward_from_chat']['id'],
+            'source_message_id' => $result['forward_origin']['message_id'] ?? 0,
+            'message_id'        => $result['message_id'] ?? 0,
             'media_group_id'    => $result['media_group_id'] ?? $media_group_id,
             'caption'           => $result['caption'] ?? '',
             'type'              => 'photo',
@@ -156,10 +156,10 @@ class Hook extends Command
     {
         $media_group_id = CodeExtend::uniqidNumber(17);
         $resource = [
-            'channel_id'        => $this->getChannelId($result['forward_origin']['chat']['id']),
-            'source_channel_id' => $result['forward_origin']['chat']['id'],
-            'source_message_id' => $result['forward_origin']['message_id'],
-            'message_id'        => $result['message_id'],
+            'channel_id'        => $this->getChannelId($result['forward_from_chat']['id']),
+            'source_channel_id' => $result['forward_from_chat']['id'],
+            'source_message_id' => $result['forward_origin']['message_id'] ?? 0,
+            'message_id'        => $result['message_id'] ?? 0,
             'media_group_id'    => $result['media_group_id'] ?? $media_group_id,
             'caption'           => $result['caption'] ?? '',
             'type'              => 'video/mp4',
